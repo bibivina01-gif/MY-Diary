@@ -547,7 +547,7 @@
     };
     const DEMO_ENTRIES = { sample:[] };
 
-    const state = { app:null,auth:null,db:null,storage:null,user:null,profile:null,ownerId:"demo-owner",slug:"demo",home:null,books:[],book:null,menus:[],menu:null,entries:[],photos:[],isOwner:false,isFriend:false,preview:false,unsubs:[],selectedEntryId:null,entryFiles:[],entryLeftMediaItems:[],entryRightMediaItems:[],dragMediaId:null,dragMediaSide:null,photoFile:null,tempAssets:{},tempHomeAsset:null,friendRequests:[],friends:[],friendProfiles:{},childUnsubs:[],friendUnsubs:[],migratingDefaultMenus:false,migratingGalleryName:false,imageEditor:null,entryStickers:[],selectedStickerId:null,stickerDirectMode:false,stickerDirectSnapshot:[],guestbookEditId:null,guestbookMediaItems:[] };
+    const state = { app:null,auth:null,db:null,storage:null,user:null,profile:null,ownerId:"demo-owner",slug:"demo",home:null,books:[],book:null,menus:[],menu:null,entries:[],photos:[],isOwner:false,isFriend:false,preview:false,unsubs:[],selectedEntryId:null,entryFiles:[],entryLeftMediaItems:[],entryRightMediaItems:[],dragMediaId:null,dragMediaSide:null,photoFile:null,tempAssets:{},tempHomeAsset:null,friendRequests:[],friends:[],friendProfiles:{},childUnsubs:[],friendUnsubs:[],migratingDefaultMenus:false,migratingGalleryName:false,imageEditor:null,entryStickers:[],selectedStickerId:null,stickerDirectMode:false,stickerDirectSnapshot:[],guestbookEditId:null,guestbookMediaItems:[],galleryViewRestore:null };
     const $ = id => document.getElementById(id);
     const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
     const safeUrl = value => { try { const url = new URL(value,location.href); return ["http:","https:","blob:","data:"].includes(url.protocol) ? url.href : ""; } catch { return ""; } };
@@ -945,8 +945,36 @@
     function gallerySearchMatch(item,query=''){
       const q=query.trim().toLowerCase();if(!q)return true;return [item.name,item.message,formatDate(item.createdAt)].map(richToPlain).join(' ').toLowerCase().includes(q);
     }
+    function rememberGalleryView(){
+      const pages=$('spread')?.querySelectorAll('.page')||[];
+      const token=`gallery-${Date.now()}-${Math.random()}`;
+      state.galleryViewRestore={
+        token,
+        menuId:state.menu?.id||'',
+        leftScroll:pages[0]?.scrollTop||0,
+        rightScroll:pages[1]?.scrollTop||0,
+        windowScroll:window.scrollY||0,
+        guestbookQuery:$('guestbookSearchInput')?.value||'',
+        albumQuery:$('albumSearchInput')?.value||'',
+        until:Date.now()+2200
+      };
+      window.setTimeout(()=>{if(state.galleryViewRestore?.token===token)state.galleryViewRestore=null;},2300);
+    }
+    function restoreGalleryView(){
+      const saved=state.galleryViewRestore;
+      if(!saved||saved.menuId!==state.menu?.id||Date.now()>saved.until)return;
+      const guestInput=$('guestbookSearchInput'),albumInput=$('albumSearchInput');
+      if(guestInput)guestInput.value=saved.guestbookQuery;
+      if(albumInput)albumInput.value=saved.albumQuery;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        const pages=$('spread')?.querySelectorAll('.page')||[];
+        if(pages[0])pages[0].scrollTop=saved.leftScroll;
+        if(pages[1])pages[1].scrollTop=saved.rightScroll;
+        window.scrollTo({top:saved.windowScroll,left:0,behavior:'auto'});
+      }));
+    }
     async function togglePhotoHeart(id){
-      if(!state.isOwner||!state.user)return;const item=state.photos.find(value=>value.id===id);if(!item)return;try{await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',id),{hearted:!item.hearted,heartedAt:serverTimestamp()});}catch(error){notify(error.message,'error');}
+      if(!state.isOwner||!state.user)return;const item=state.photos.find(value=>value.id===id);if(!item)return;rememberGalleryView();try{await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',id),{hearted:!item.hearted,heartedAt:serverTimestamp()});}catch(error){state.galleryViewRestore=null;notify(error.message,'error');}
     }
     function renderGallery(){
       const items=state.photos.filter(item=>item.menuId===state.menu.id).sort((a,b)=>(b.createdAt?.seconds??0)-(a.createdAt?.seconds??0));
@@ -956,8 +984,9 @@
       $('spread').innerHTML=left+right;
       const paintGuestbooks=(query='')=>{const visible=guestbooks.filter(item=>gallerySearchMatch(item,query));$('guestbookList').innerHTML=visible.length?visible.map(item=>{const canManage=state.isOwner||state.user?.uid===item.uploaderId,media=guestbookImageUrls(item);return `<article class="guestbook-card"><div class="guestbook-card-head"><div class="guestbook-card-head-main"><strong>${escapeHtml(item.name||'이름 없음')}</strong>${galleryHeartHtml(item)}</div><small>${escapeHtml(formatDate(item.createdAt))}</small></div><div class="guestbook-message rich-content">${richHtml(item.message||'')}</div>${media.length?`<div class="guestbook-media-grid">${media.map((url,index)=>`<button type="button" aria-label="${index+1}번째 사진 크게 보기"><img src="${escapeHtml(url)}" data-lightbox-src="${escapeHtml(url)}" data-lightbox-name="${escapeHtml(item.name||'방명록 사진')}" data-lightbox-message="${escapeHtml(richPlain(item.message||''))}" alt="방명록 첨부 사진" loading="lazy" /></button>`).join('')}</div>`:''}${canManage?`<div class="guestbook-actions"><button class="btn small" data-edit-guestbook="${escapeHtml(item.id)}" type="button">수정</button><button class="btn danger small" data-delete-photo="${escapeHtml(item.id)}" type="button">삭제</button></div>`:''}</article>`;}).join(''):emptyState('검색 결과가 없어요','작성자 이름이나 다른 단어로 찾아보세요.');bindGalleryInteractions();bindLightboxImages();};
       const paintAlbum=(query='')=>{const visible=album.filter(item=>gallerySearchMatch(item,query));$('albumList').innerHTML=visible.length?visible.map(item=>`<article class="photo-card"><button class="photo-open" data-lightbox-src="${escapeHtml(safeUrl(item.imageUrl))}" data-lightbox-name="${escapeHtml(item.name||'') }" data-lightbox-message="${escapeHtml(richPlain(item.message||''))}" type="button"><img class="${fitClass(item.fitMode||'contain')}" src="${escapeHtml(safeUrl(item.imageUrl))}" alt="친구 사진" loading="lazy" /></button><div class="photo-caption"><div class="album-card-head"><strong>${escapeHtml(item.name||'이름 없음')}</strong>${galleryHeartHtml(item)}</div><div class="rich-content">${richHtml(item.message||'')}</div><small>${escapeHtml(formatDate(item.createdAt))}</small>${(state.isOwner||state.user?.uid===item.uploaderId)?`<button class="btn danger small" data-delete-photo="${escapeHtml(item.id)}" type="button" style="margin-top:8px">삭제</button>`:''}</div></article>`).join(''):emptyState('검색 결과가 없어요','작성자 이름이나 다른 단어로 찾아보세요.');bindGalleryInteractions();bindLightboxImages();};
-      function bindGalleryInteractions(){$('spread').querySelectorAll('[data-edit-guestbook]').forEach(btn=>{if(btn.dataset.bound)return;btn.dataset.bound='1';btn.addEventListener('click',()=>openGuestbookModal(guestbooks.find(item=>item.id===btn.dataset.editGuestbook)));});$('spread').querySelectorAll('[data-delete-photo]').forEach(btn=>{if(btn.dataset.bound)return;btn.dataset.bound='1';btn.addEventListener('click',()=>deletePhoto(btn.dataset.deletePhoto));});$('spread').querySelectorAll('[data-toggle-heart]').forEach(btn=>{if(btn.dataset.bound)return;btn.dataset.bound='1';btn.addEventListener('click',()=>togglePhotoHeart(btn.dataset.toggleHeart));});}
-      paintGuestbooks();paintAlbum();$('openGuestbookBtn')?.addEventListener('click',()=>openGuestbookModal());$('openPhotoBtn')?.addEventListener('click',()=>{if(!$('photoNameInput').value)$('photoNameInput').value=state.profile?.displayName||state.user?.displayName||'';openModal('photoModal');});$('guestbookSearchInput')?.addEventListener('input',event=>paintGuestbooks(event.target.value));$('albumSearchInput')?.addEventListener('input',event=>paintAlbum(event.target.value));
+      function bindGalleryInteractions(){$('spread').querySelectorAll('[data-edit-guestbook]').forEach(btn=>{if(btn.dataset.bound)return;btn.dataset.bound='1';btn.addEventListener('click',()=>openGuestbookModal(guestbooks.find(item=>item.id===btn.dataset.editGuestbook)));});$('spread').querySelectorAll('[data-delete-photo]').forEach(btn=>{if(btn.dataset.bound)return;btn.dataset.bound='1';btn.addEventListener('click',()=>deletePhoto(btn.dataset.deletePhoto));});$('spread').querySelectorAll('[data-toggle-heart]').forEach(btn=>{if(btn.dataset.bound)return;btn.dataset.bound='1';btn.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();togglePhotoHeart(btn.dataset.toggleHeart);});});}
+      const savedGalleryView=state.galleryViewRestore&&state.galleryViewRestore.menuId===state.menu?.id&&Date.now()<=state.galleryViewRestore.until?state.galleryViewRestore:null;
+      paintGuestbooks(savedGalleryView?.guestbookQuery||'');paintAlbum(savedGalleryView?.albumQuery||'');$('openGuestbookBtn')?.addEventListener('click',()=>openGuestbookModal());$('openPhotoBtn')?.addEventListener('click',()=>{if(!$('photoNameInput').value)$('photoNameInput').value=state.profile?.displayName||state.user?.displayName||'';openModal('photoModal');});$('guestbookSearchInput')?.addEventListener('input',event=>paintGuestbooks(event.target.value));$('albumSearchInput')?.addEventListener('input',event=>paintAlbum(event.target.value));restoreGalleryView();
     }
     function renderFriendsPage(){
       const friends=sortedFriends();const ownerImage=safeUrl(state.home?.linkImage||'');const left=`<article class="page left">${pageHeading(state.menu.name,state.menu.description)}<div class="paper-note"><div class="link-image-preview" style="height:190px">${ownerImage?`<img src="${escapeHtml(ownerImage)}" alt="링크 이미지" />`:'LINK'}</div><h3 class="big-title" style="margin-top:20px">${escapeHtml(state.home?.title||state.slug)}</h3><p class="copy-text">등록된 친구 카드를 누르면 해당 다이어리 홈페이지로 바로 이동해요.</p></div></article>`;
