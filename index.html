@@ -72,7 +72,7 @@
     .page-scroll-hint{font-size:.61rem;color:var(--muted);margin:8px 0 0;display:flex;gap:6px;align-items:center}.page-scroll-hint::before{content:"↕";color:var(--accent-deep);font-weight:900}
     .sheet-directory{position:sticky;top:-1px;z-index:8;margin:-12px 0 22px;padding:10px;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(12px);box-shadow:0 8px 22px rgba(75,50,57,.07)}
     .sheet-directory-row{display:grid;grid-template-columns:38px minmax(0,1fr) 38px;gap:7px;align-items:center}.sheet-directory button{width:38px;height:38px;padding:0}.sheet-directory select,.sheet-directory input{width:100%;height:38px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.78);padding:0 10px;color:var(--ink);outline:none}.sheet-directory input{margin-top:7px}
-    .sheet-chips{display:flex;gap:6px;overflow-x:auto;padding:8px 1px 1px;scrollbar-width:none}.sheet-chips::-webkit-scrollbar{display:none}.sheet-chip{flex:0 0 auto;border:1px solid var(--line);background:rgba(255,255,255,.66);border-radius:999px;padding:6px 10px;font-size:.65rem;font-weight:850;cursor:pointer;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sheet-chip.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+    .sheet-chips{display:flex;gap:6px;overflow-x:auto;padding:8px 1px 1px;scrollbar-width:none}.sheet-chips::-webkit-scrollbar{display:none}.sheet-chip{flex:0 0 auto;border:1px solid var(--line);background:rgba(255,255,255,.66);border-radius:999px;padding:6px 10px;font-size:.65rem;font-weight:850;cursor:pointer;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sheet-chip.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}.sheet-current-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:8px}.sheet-current-actions button{width:auto;height:32px;padding:0 11px;border-radius:10px;font-size:.67rem}.sheet-current-actions .danger{color:#a9485f;border-color:#e7b4c0;background:#fff7f9}
     .spread-label{font-size:.63rem;font-weight:900;letter-spacing:.13em;color:var(--accent-deep);text-transform:uppercase}.spread-title{font:500 clamp(2.15rem,3.8vw,4.2rem)/1 Georgia,"Times New Roman",serif;letter-spacing:-.05em;margin:7px 0 0;white-space:pre-wrap}.spread-subtitle{color:var(--muted);font-size:.83rem;margin:10px 0 0;white-space:pre-wrap}.diary-copy{white-space:pre-wrap;color:var(--muted);font-size:.88rem;margin:18px 0 0}
     .pair-person{border:1px solid var(--line);background:rgba(255,255,255,.58);border-radius:23px;padding:16px;box-shadow:var(--small-shadow);margin-top:18px}.pair-person-photo{height:300px;border-radius:17px;overflow:hidden;background:linear-gradient(145deg,var(--accent-soft),rgba(255,255,255,.75));display:grid;place-items:center;color:var(--accent-deep);font:500 1.1rem Georgia,"Times New Roman",serif}.pair-person-photo img{width:100%;height:100%;object-fit:cover}.pair-person h3{font:500 2rem/1 Georgia,"Times New Roman",serif;margin:16px 0 0}.pair-person p{white-space:pre-wrap;color:var(--muted);font-size:.8rem;margin:9px 0 0}.pair-symbol{text-align:center;font-size:1.4rem;color:var(--accent);margin:9px 0}.pair-story-note{margin-top:18px;padding:18px;border:1px dashed var(--line);border-radius:18px;background:color-mix(in srgb,var(--accent-soft) 35%,transparent);white-space:pre-wrap;color:var(--muted);font-size:.82rem}
     .pair-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.pair-mini{border:1px solid var(--line);background:rgba(255,255,255,.6);border-radius:18px;padding:10px}.pair-mini img{width:100%;height:205px;object-fit:cover;border-radius:13px;background:var(--accent-soft)}.pair-mini strong{display:block;font:500 1.25rem Georgia,"Times New Roman",serif;margin:10px 2px 0}.pair-mini span{display:block;color:var(--muted);font-size:.69rem;white-space:pre-wrap;margin:5px 2px 0}
@@ -340,7 +340,7 @@
       $('spread')?.querySelectorAll('.page').forEach(page=>{
         if(page.dataset.dragBound)return;page.dataset.dragBound='true';page.querySelectorAll('img').forEach(img=>img.draggable=false);
         let active=false,startY=0,startScroll=0,moved=false,suppressClick=false;
-        page.addEventListener('pointerdown',event=>{if(event.pointerType==='touch'||event.button!==0||event.target.closest('input,textarea,select,a,[draggable="true"]'))return;active=true;moved=false;startY=event.clientY;startScroll=page.scrollTop;page.setPointerCapture?.(event.pointerId);page.classList.add('drag-scrolling');});
+        page.addEventListener('pointerdown',event=>{if(event.pointerType==='touch'||event.button!==0||event.target.closest('input,textarea,select,button,a,label,[draggable="true"]'))return;active=true;moved=false;startY=event.clientY;startScroll=page.scrollTop;page.setPointerCapture?.(event.pointerId);page.classList.add('drag-scrolling');});
         page.addEventListener('pointermove',event=>{if(!active)return;const delta=event.clientY-startY;if(Math.abs(delta)>4)moved=true;page.scrollTop=startScroll-delta;});
         const stop=event=>{if(!active)return;active=false;page.classList.remove('drag-scrolling');try{page.releasePointerCapture?.(event.pointerId);}catch{}if(moved){suppressClick=true;event.preventDefault();setTimeout(()=>suppressClick=false,80);}};
         page.addEventListener('click',event=>{if(suppressClick){event.preventDefault();event.stopImmediatePropagation();suppressClick=false;}},true);
@@ -361,14 +361,20 @@
     function pageTemplateLabel(value){return ({'pair-split':'마주 보는 페어틀','pair-cards':'포토카드 페어틀','free':'자유 기록','story':'서사 정리'})[value]||'자유 기록';}
     function sheetNavigator(entries,selected){
       const index=Math.max(0,entries.findIndex(item=>item.id===selected?.id));
-      return `<div class="sheet-directory"><div class="sheet-directory-row"><button class="btn" id="prevSheetBtn" type="button" ${index<=0?'disabled':''}>‹</button><select id="sheetSelect">${entries.map(item=>`<option value="${escapeHtml(item.id)}" ${item.id===selected?.id?'selected':''}>${escapeHtml(item.title||'제목 없는 속지')} · ${escapeHtml(pageTemplateLabel(item.pageTemplate||'free'))}</option>`).join('')}</select><button class="btn" id="nextSheetBtn" type="button" ${index>=entries.length-1?'disabled':''}>›</button></div><input id="sheetSearch" placeholder="속지 제목이나 내용 검색" /><div class="sheet-chips" id="sheetChips">${entries.map(item=>`<button class="sheet-chip ${item.id===selected?.id?'active':''}" data-sheet-id="${escapeHtml(item.id)}" type="button">${escapeHtml(item.title||'제목 없는 속지')}</button>`).join('')}</div></div>`;
+      const actions=state.isOwner&&!state.preview?`<div class="sheet-current-actions admin-only"><button class="btn" data-sheet-edit="${escapeHtml(selected?.id||'')}" type="button">현재 글 수정</button><button class="btn danger" data-sheet-delete="${escapeHtml(selected?.id||'')}" type="button">현재 글 삭제</button></div>`:'';
+      return `<div class="sheet-directory"><div class="sheet-directory-row"><button class="btn" id="prevSheetBtn" type="button" ${index<=0?'disabled':''} aria-label="이전 속지">‹</button><select id="sheetSelect" aria-label="속지 선택">${entries.map(item=>`<option value="${escapeHtml(item.id)}" ${item.id===selected?.id?'selected':''}>${escapeHtml(item.title||'제목 없는 속지')} · ${escapeHtml(pageTemplateLabel(item.pageTemplate||'free'))}</option>`).join('')}</select><button class="btn" id="nextSheetBtn" type="button" ${index>=entries.length-1?'disabled':''} aria-label="다음 속지">›</button></div><input id="sheetSearch" placeholder="속지 제목이나 내용 검색" /><div class="sheet-chips" id="sheetChips">${entries.map(item=>`<button class="sheet-chip ${item.id===selected?.id?'active':''}" data-sheet-id="${escapeHtml(item.id)}" type="button">${escapeHtml(item.title||'제목 없는 속지')}</button>`).join('')}</div>${actions}</div>`;
     }
     function bindSheetNavigator(entries,selected){
-      const choose=id=>{if(!id)return;state.selectedEntryId=id;renderSpread();renderAdmin();};
-      $('sheetSelect')?.addEventListener('change',event=>choose(event.target.value));
-      $('spread').querySelectorAll('[data-sheet-id]').forEach(btn=>btn.addEventListener('click',()=>choose(btn.dataset.sheetId)));
-      const index=entries.findIndex(item=>item.id===selected?.id);$('prevSheetBtn')?.addEventListener('click',()=>choose(entries[index-1]?.id));$('nextSheetBtn')?.addEventListener('click',()=>choose(entries[index+1]?.id));
-      $('sheetSearch')?.addEventListener('input',event=>{const q=event.target.value.trim().toLowerCase();const filtered=entries.filter(item=>JSON.stringify(item).toLowerCase().includes(q));$('sheetChips').innerHTML=filtered.map(item=>`<button class="sheet-chip ${item.id===selected?.id?'active':''}" data-sheet-id="${escapeHtml(item.id)}" type="button">${escapeHtml(item.title||'제목 없는 속지')}</button>`).join('')||'<span class="section-help">검색 결과가 없어요.</span>';$('spread').querySelectorAll('[data-sheet-id]').forEach(btn=>btn.addEventListener('click',()=>choose(btn.dataset.sheetId)));});
+      const choose=id=>{if(!id||id===state.selectedEntryId)return;state.selectedEntryId=id;renderSpread();renderAdmin();};
+      $('sheetSelect')?.addEventListener('change',event=>choose(event.currentTarget.value));
+      const bindChipClicks=()=>$('spread')?.querySelectorAll('[data-sheet-id]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();choose(btn.dataset.sheetId);}));
+      bindChipClicks();
+      const index=entries.findIndex(item=>item.id===selected?.id);
+      $('prevSheetBtn')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();choose(entries[index-1]?.id);});
+      $('nextSheetBtn')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();choose(entries[index+1]?.id);});
+      $('spread')?.querySelector('[data-sheet-edit]')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();openContentModal(selected);});
+      $('spread')?.querySelector('[data-sheet-delete]')?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();deleteEntry(selected.id);});
+      $('sheetSearch')?.addEventListener('input',event=>{const q=event.currentTarget.value.trim().toLowerCase();const filtered=entries.filter(item=>JSON.stringify(item).toLowerCase().includes(q));$('sheetChips').innerHTML=filtered.map(item=>`<button class="sheet-chip ${item.id===selected?.id?'active':''}" data-sheet-id="${escapeHtml(item.id)}" type="button">${escapeHtml(item.title||'제목 없는 속지')}</button>`).join('')||'<span class="section-help">검색 결과가 없어요.</span>';bindChipClicks();});
     }
     function splitTimeline(text=''){return String(text).split(/\n+/).map(line=>line.trim()).filter(Boolean).map(line=>{const [title,...rest]=line.split('|');return {title:(title||'기록').trim(),body:rest.join('|').trim()};});}
     function renderPages(){
@@ -466,6 +472,33 @@
     }
     function addEntryFiles(files){const room=6-state.entryMediaItems.length;[...files].slice(0,room).forEach(file=>state.entryMediaItems.push({id:`file-${randomId()}`,type:'file',file,preview:URL.createObjectURL(file)}));$('entryFilesInput').value='';renderEntryMedia();if(files.length>room)notify('사진은 최대 6장까지 넣을 수 있어요.','error');}
     function previewFiles(files,containerId){const selected=[...files].slice(0,6);const container=$(containerId);container.innerHTML='';container.hidden=!selected.length;selected.forEach(file=>{const img=document.createElement('img');img.src=URL.createObjectURL(file);img.onload=()=>URL.revokeObjectURL(img.src);container.append(img);});return selected;}
+    async function sanitizeImage(file){
+      if(!file)throw new Error('사진 파일을 선택해 주세요.');
+      if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('JPG, PNG, WEBP 사진만 올릴 수 있어요.');
+      if(file.size>15*1024*1024)throw new Error('사진 한 장은 15MB 이하만 올릴 수 있어요.');
+      let source=null,objectUrl='';
+      try{
+        if('createImageBitmap' in window){
+          try{source=await createImageBitmap(file,{imageOrientation:'from-image'});}catch{source=await createImageBitmap(file);}
+        }else{
+          objectUrl=URL.createObjectURL(file);source=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('사진을 읽지 못했어요.'));img.src=objectUrl;});
+        }
+        const width=source.naturalWidth||source.width,height=source.naturalHeight||source.height;
+        if(!width||!height)throw new Error('사진 크기를 확인하지 못했어요.');
+        const maxSide=2200,scale=Math.min(1,maxSide/Math.max(width,height));
+        const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(width*scale));canvas.height=Math.max(1,Math.round(height*scale));
+        const ctx=canvas.getContext('2d',{alpha:true});if(!ctx)throw new Error('사진 변환을 시작하지 못했어요.');
+        ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(source,0,0,canvas.width,canvas.height);
+        const blob=await new Promise((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(new Error('사진 변환에 실패했어요.')),'image/webp',0.9));
+        return blob;
+      }finally{try{source?.close?.();}catch{}if(objectUrl)URL.revokeObjectURL(objectUrl);}
+    }
+    async function uploadSanitized(file,path){
+      if(!state.storage)throw new Error('Firebase Storage가 아직 연결되지 않았어요.');
+      const blob=await sanitizeImage(file);const fileRef=ref(state.storage,`${path}/${Date.now()}-${randomId()}.webp`);
+      await uploadBytes(fileRef,blob,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});
+      return await getDownloadURL(fileRef);
+    }
     async function previewAsset(key,file){if(!file)return;try{const blob=await sanitizeImage(file);const preview=URL.createObjectURL(blob);const previous=state.tempAssets[key]||{};previous.preview&&URL.revokeObjectURL(previous.preview);const originalUrl=previous.originalUrl??(state.book?.[key]&&!String(state.book[key]).startsWith('blob:')?state.book[key]:'');state.tempAssets[key]={file,blob,preview,originalUrl};state.book={...state.book,[key]:preview};applyTheme(state.book);renderAssetGrid();renderLibrary();renderSpread();}catch(error){notify(error.message,'error');}}
 
     async function deleteStoredUrl(url){if(!url||String(url).startsWith('blob:'))return;try{await deleteObject(ref(state.storage,url));}catch{}}
