@@ -364,6 +364,16 @@
     function updateBodyFlags(){ document.body.classList.toggle("is-owner",state.isOwner&&!state.preview);document.body.classList.toggle("is-friend",state.isFriend); }
     function getBook(bookId){ return state.books.find(item=>item.id===bookId); }
     function sorted(list){ return [...list].sort((a,b)=>(a.order??999)-(b.order??999)||(a.createdAt?.seconds??0)-(b.createdAt?.seconds??0)); }
+    function menuTypeLabel(type){
+      return ({
+        cover:'표지',
+        pages:'자유 페이지',
+        persona:'페르소나',
+        board:'기록',
+        gallery:'사진첩',
+        friends:'친구'
+      })[type] || '메뉴';
+    }
 
     function renderAll(){
       $('loadingCover').hidden=true;
@@ -625,7 +635,24 @@
       for(const [key,value] of Object.entries(state.tempAssets)){oldAssetUrls[key]=value.originalUrl||'';if(value.clear)updates[key]='';else if(value.blob){const fileRef=ref(state.storage,`homes/${state.ownerId}/books/${state.book.id}/assets/${key}-${randomId()}.webp`);await uploadBytes(fileRef,value.blob,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});updates[key]=await getDownloadURL(fileRef);}}
       await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id),updates);
       const homeTitle=$('homeTitleInput').value.trim()||`${state.profile?.displayName||state.slug}의 다이어리`;const homeUpdates={title:homeTitle,updatedAt:serverTimestamp()};let oldLinkImage='';
-      if(state.tempHomeAsset){oldLinkImage=state.tempHomeAsset.originalUrl||'';if(state.tempHomeAsset.clear)homeUpdates.linkImage='';else if(state.tempHomeAsset.blob){const fileRef=ref(state.storage,`homes/${state.ownerId}/profile/link-${randomId()}.webp`);await uploadBytes(fileRef,state.tempHomeAsset.blob,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});homeUpdates.linkImage=await getDownloadURL(fileRef);}}
+      if(state.tempHomeAsset){
+        if(!state.user)throw new Error('로그인 정보가 만료됐어요. 다시 로그인한 뒤 저장해 주세요.');
+        if(state.user.uid!==state.ownerId)throw new Error('내 다이어리에서만 링크 이미지를 바꿀 수 있어요.');
+        await state.user.getIdToken(true);
+        oldLinkImage=state.tempHomeAsset.originalUrl||'';
+        if(state.tempHomeAsset.clear)homeUpdates.linkImage='';
+        else if(state.tempHomeAsset.blob){
+          const ownerUid=state.user.uid;
+          const fileRef=ref(state.storage,`homes/${ownerUid}/profile/link-${randomId()}.webp`);
+          try{
+            await uploadBytes(fileRef,state.tempHomeAsset.blob,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});
+          }catch(error){
+            if(error?.code==='storage/unauthorized')throw new Error('링크 이미지 업로드 권한이 없어요. Firebase Storage의 최신 규칙을 게시한 뒤 로그아웃·로그인해 주세요.');
+            throw error;
+          }
+          homeUpdates.linkImage=await getDownloadURL(fileRef);
+        }
+      }
       await updateDoc(doc(state.db,'homes',state.ownerId),homeUpdates);state.home={...(state.home||{}),...homeUpdates};if('linkImage' in homeUpdates)state.home.linkImage=homeUpdates.linkImage;
       await Promise.all([...Object.values(oldAssetUrls),oldLinkImage].filter(Boolean).map(deleteStoredUrl));state.tempAssets={};if(state.tempHomeAsset?.preview)URL.revokeObjectURL(state.tempHomeAsset.preview);state.tempHomeAsset=null;renderAll();notify('다이어리 설정을 저장했어요.');
       }catch(error){notify(error.message,'error');}finally{$('saveBookBtn').disabled=false;}
