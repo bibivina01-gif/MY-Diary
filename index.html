@@ -166,6 +166,28 @@
     .rich-content{white-space:normal;word-break:break-word}.rich-content p{margin:.45em 0}.rich-content ul,.rich-content ol{padding-left:1.4em}.rich-content span{max-width:100%}
     .og-help{margin-top:9px;padding:9px 11px;border-radius:11px;background:var(--accent-soft);color:var(--accent-deep);font-size:.67rem;line-height:1.55}
 
+    /* 내 다이어리 돌아가기 + 간단한 문서형 글 편집기 */
+    .my-home-btn{display:inline-flex;align-items:center;gap:5px;background:var(--accent-soft);color:var(--accent-deep);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+    .rich-editor-shell{border:1px solid var(--line);border-radius:13px;background:var(--input-bg);overflow:hidden}
+    .rich-toolbar{display:flex;align-items:center;gap:3px;flex-wrap:wrap;padding:7px 9px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--toolbar) 92%,var(--surface));position:relative}
+    .rich-toolbar .rich-break{flex-basis:100%;height:0}
+    .rich-toolbar .rich-separator{width:1px;height:22px;background:var(--line);margin:0 4px}
+    .rich-toolbar button,.rich-toolbar select,.rich-toolbar .rich-color-label{height:31px;min-width:31px;border:0;border-radius:7px;background:transparent;color:var(--toolbar-text);font-size:.69rem;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+    .rich-toolbar select{border:1px solid var(--line);background:var(--surface);min-width:74px}
+    .rich-toolbar button:hover,.rich-toolbar button.active,.rich-toolbar .rich-color-label:hover{background:var(--accent-soft);color:var(--accent-deep)}
+    .rich-toolbar .rich-color-label{position:relative;padding:0 6px;font-weight:900}
+    .rich-toolbar .rich-color-label input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+    .rich-color-line{position:absolute;left:7px;right:7px;bottom:3px;height:3px;border-radius:99px;background:var(--rich-swatch,var(--accent))}
+    .rich-editor{min-height:118px;padding:15px 18px;outline:none;word-break:break-word;color:var(--ink);font-size:16px;line-height:1.75;background:var(--input-bg)}
+    .rich-editor[data-single-line="true"]{min-height:46px;max-height:90px;white-space:nowrap;overflow-x:auto;overflow-y:hidden}
+    .rich-editor:empty::before{content:attr(data-placeholder);color:var(--muted);pointer-events:none}
+    .rich-html-source{display:block;width:100%;min-height:210px;padding:14px 16px;border:0;outline:none;resize:vertical;background:#211d21;color:#f4edf1;font:13px/1.65 Consolas,Monaco,monospace;tab-size:2}
+    .rich-editor h1,.rich-content h1{font-size:2em;line-height:1.2;margin:.55em 0}.rich-editor h2,.rich-content h2{font-size:1.55em;line-height:1.3;margin:.55em 0}.rich-editor h3,.rich-content h3{font-size:1.25em;line-height:1.35;margin:.55em 0}
+    .rich-editor blockquote,.rich-content blockquote{margin:.8em 0;padding:.65em 1em;border-left:4px solid var(--accent);background:var(--accent-soft)}
+    .rich-editor pre,.rich-content pre{overflow:auto;padding:12px;border-radius:9px;background:#282328;color:#f7f0f4;font:13px/1.6 Consolas,Monaco,monospace}
+    .rich-editor a,.rich-content a{color:var(--accent-deep);text-decoration:underline}
+    @media(max-width:760px){.my-home-btn{font-size:0!important;width:38px;padding:0!important}.my-home-btn::before{content:"⌂";font-size:1rem}.rich-toolbar{gap:2px;padding:6px}.rich-toolbar button,.rich-toolbar select,.rich-toolbar .rich-color-label{padding-inline:6px;min-width:29px}.rich-toolbar select{min-width:66px}}
+
 </style>
 </head>
 <body>
@@ -177,6 +199,7 @@
       <button class="brand" id="brandBtn" type="button"><span class="brand-icon">📚</span><span class="brand-copy"><strong id="brandTitle">My Story Diary</strong><span id="brandSub">personal pair diary</span></span></button>
       <div class="header-actions">
         <button class="bookshelf-btn" id="libraryBtn" type="button" aria-label="다이어리 보관함 열기" title="다이어리 보관함 열기"><span class="shelf-icon" aria-hidden="true"><i></i><i></i><i></i></span></button>
+        <button class="btn my-home-btn" id="myHomeBtn" type="button" hidden aria-label="내 다이어리로 돌아가기" title="내 다이어리로 돌아가기">⌂ 내 다이어리</button>
         <button class="btn admin-only" id="adminBtn" type="button">다이어리 꾸미기</button>
         <button class="btn" id="shareBtn" type="button">링크 복사</button>
         <button class="btn primary" id="authBtn" type="button">로그인</button>
@@ -381,7 +404,7 @@
     const $ = id => document.getElementById(id);
     const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
     const safeUrl = value => { try { const url = new URL(value,location.href); return ["http:","https:","blob:","data:"].includes(url.protocol) ? url.href : ""; } catch { return ""; } };
-    const RICH_ALLOWED_TAGS=new Set(['DIV','P','BR','SPAN','STRONG','B','EM','I','U','S','UL','OL','LI','FONT']);
+    const RICH_ALLOWED_TAGS=new Set(['DIV','P','BR','SPAN','STRONG','B','EM','I','U','S','UL','OL','LI','FONT','A','H1','H2','H3','H4','H5','H6','BLOCKQUOTE','PRE','CODE','HR','SUB','SUP']);
     function richToPlain(value=''){
       const box=document.createElement('div');box.innerHTML=String(value??'');return (box.textContent||'').replace(/\u00a0/g,' ').trim();
     }
@@ -389,24 +412,29 @@
       const raw=String(value??'');if(!raw)return '';
       if(!/<\/?[a-z][\s\S]*>/i.test(raw))return escapeHtml(raw).replace(/\r?\n/g,'<br>');
       const parsed=new DOMParser().parseFromString(`<div>${raw}</div>`,'text/html'),root=parsed.body.firstElementChild;
+      const safeLink=value=>{try{const url=new URL(value,location.href);return ['http:','https:','mailto:'].includes(url.protocol)?url.href:'';}catch{return '';}};
       const cleanNode=node=>{
         [...node.childNodes].forEach(child=>{
+          if(child.nodeType===8){child.remove();return;}
           if(child.nodeType!==1)return;
           const tag=child.tagName;
-          if(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','SVG','MATH'].includes(tag)){child.remove();return;}
+          if(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','SVG','MATH','FORM','INPUT','BUTTON','VIDEO','AUDIO'].includes(tag)){child.remove();return;}
           if(!RICH_ALLOWED_TAGS.has(tag)){cleanNode(child);child.replaceWith(...child.childNodes);return;}
-          const oldStyle=child.getAttribute('style')||'',oldColor=child.getAttribute('color')||'',oldSize=child.getAttribute('size')||'';
+          const oldStyle=child.getAttribute('style')||'',oldColor=child.getAttribute('color')||'',oldSize=child.getAttribute('size')||'',oldFace=child.getAttribute('face')||'',oldHref=child.getAttribute('href')||'';
           [...child.attributes].forEach(attr=>child.removeAttribute(attr.name));
-          const safeStyles=[];
-          const probe=document.createElement('span');probe.setAttribute('style',oldStyle);
+          const safeStyles=[];const probe=document.createElement('span');probe.setAttribute('style',oldStyle);
           const color=oldColor||probe.style.color;if(color&&CSS.supports('color',color))safeStyles.push(`color:${color}`);
-          const fs=probe.style.fontSize;if(fs&&/^(?:[8-9]|[1-6]\d|7[0-2])px$/.test(fs))safeStyles.push(`font-size:${fs}`);
+          const bg=probe.style.backgroundColor;if(bg&&CSS.supports('color',bg))safeStyles.push(`background-color:${bg}`);
+          const fs=probe.style.fontSize;
+          if(fs&&(/^(?:[8-9]|[1-6]\d|7[0-2])px$/.test(fs)||/^(?:0\.[5-9]|1(?:\.\d)?|2(?:\.0)?)rem$/.test(fs)))safeStyles.push(`font-size:${fs}`);
           if(oldSize&&/^\d$/.test(oldSize)){const map={1:10,2:12,3:14,4:18,5:24,6:32,7:40};safeStyles.push(`font-size:${map[oldSize]||14}px`);}
+          const family=oldFace||probe.style.fontFamily;if(family&&/^[\w\s"',.-]{1,80}$/.test(family))safeStyles.push(`font-family:${family}`);
           const fw=probe.style.fontWeight;if(fw&&/^(?:normal|bold|[1-9]00)$/.test(fw))safeStyles.push(`font-weight:${fw}`);
           const fst=probe.style.fontStyle;if(['normal','italic'].includes(fst))safeStyles.push(`font-style:${fst}`);
           const td=probe.style.textDecoration;if(td&&/^(?:none|underline|line-through)(?: solid)?(?: [^;]+)?$/.test(td))safeStyles.push(`text-decoration:${td}`);
           const ta=probe.style.textAlign;if(['left','center','right','justify'].includes(ta))safeStyles.push(`text-align:${ta}`);
           if(safeStyles.length)child.setAttribute('style',safeStyles.join(';'));
+          if(tag==='A'){const href=safeLink(oldHref);if(href){child.setAttribute('href',href);child.setAttribute('target','_blank');child.setAttribute('rel','noopener noreferrer');}}
           cleanNode(child);
         });
       };
@@ -423,23 +451,47 @@
         if(source.dataset.richReady)return;source.dataset.richReady='true';source.hidden=true;
         const shell=document.createElement('div');shell.className='rich-editor-shell';
         const toolbar=document.createElement('div');toolbar.className='rich-toolbar';
-        toolbar.innerHTML=`<button type="button" data-rich-cmd="bold" title="굵게"><b>B</b></button><button type="button" data-rich-thin title="얇게">얇게</button><button type="button" data-rich-normal title="보통 굵기">보통</button><button type="button" data-rich-cmd="italic" title="기울임"><i>I</i></button><button type="button" data-rich-cmd="underline" title="밑줄"><u>U</u></button><select data-rich-size title="글자 크기"><option value="">크기</option><option value="12">12</option><option value="14">14</option><option value="16">16</option><option value="18">18</option><option value="22">22</option><option value="28">28</option><option value="36">36</option><option value="48">48</option></select><input type="color" data-rich-color value="#54474c" title="글자 색" /><button type="button" data-rich-cmd="justifyLeft">왼쪽</button><button type="button" data-rich-cmd="justifyCenter">가운데</button><button type="button" data-rich-cmd="justifyRight">오른쪽</button><button type="button" data-rich-clear>서식 지우기</button>`;
-        const editor=document.createElement('div');editor.className='rich-editor';editor.contentEditable='true';editor.dataset.singleLine=source.dataset.richSingle==='true'?'true':'false';editor.dataset.placeholder=source.getAttribute('placeholder')||'';
-        let savedRange=null;
+        toolbar.innerHTML=`
+          <select data-rich-font title="글꼴"><option value="Pretendard, Noto Sans KR, sans-serif">프리텐드</option><option value="Noto Sans KR, sans-serif">고딕</option><option value="Georgia, serif">명조</option><option value="Consolas, Monaco, monospace">모노</option></select>
+          <select data-rich-size title="글자 크기"><option value="12">12</option><option value="14">14</option><option value="16" selected>16</option><option value="18">18</option><option value="20">20</option><option value="24">24</option><option value="28">28</option><option value="32">32</option><option value="40">40</option><option value="48">48</option></select>
+          <span class="rich-separator"></span>
+          <button type="button" data-rich-cmd="bold" title="굵게"><b>B</b></button><button type="button" data-rich-cmd="italic" title="기울임"><i>I</i></button><button type="button" data-rich-cmd="underline" title="밑줄"><u>U</u></button><button type="button" data-rich-cmd="strikeThrough" title="취소선"><s>S</s></button>
+          <span class="rich-separator"></span>
+          <label class="rich-color-label" title="글자 색"><span>A</span><span class="rich-color-line" style="--rich-swatch:#54474c"></span><input type="color" data-rich-color value="#54474c" /></label>
+          <label class="rich-color-label" title="형광펜"><span>▰</span><span class="rich-color-line" style="--rich-swatch:#ffe66d"></span><input type="color" data-rich-highlight value="#ffe66d" /></label>
+          <span class="rich-break"></span>
+          <select data-rich-block title="문단 형태"><option value="p">블록</option><option value="p">본문</option><option value="h1">제목 1</option><option value="h2">제목 2</option><option value="h3">제목 3</option><option value="blockquote">인용문</option><option value="pre">코드 블록</option></select>
+          <span class="rich-separator"></span>
+          <button type="button" data-rich-cmd="justifyLeft" title="왼쪽 정렬">≡</button><button type="button" data-rich-cmd="justifyCenter" title="가운데 정렬">≡</button><button type="button" data-rich-cmd="justifyRight" title="오른쪽 정렬">≡</button><button type="button" data-rich-cmd="justifyFull" title="양쪽 정렬">☰</button>
+          <span class="rich-separator"></span>
+          <button type="button" data-rich-cmd="insertUnorderedList" title="글머리표">•</button><button type="button" data-rich-cmd="insertOrderedList" title="번호 목록">1.</button>
+          <span class="rich-separator"></span>
+          <button type="button" data-rich-link title="링크">🔗</button><button type="button" data-rich-html title="HTML 직접 입력">&lt;/&gt;</button><button type="button" data-rich-clear title="서식 지우기">⊘</button>`;
+        const editor=document.createElement('div');editor.className='rich-editor';editor.contentEditable='true';editor.dataset.singleLine=source.dataset.richSingle==='true'?'true':'false';editor.dataset.placeholder=source.getAttribute('placeholder')||'내용을 작성하세요...';
+        const htmlSource=document.createElement('textarea');htmlSource.className='rich-html-source';htmlSource.hidden=true;htmlSource.spellcheck=false;htmlSource.placeholder='<p>HTML을 직접 입력하세요.</p>';
+        let savedRange=null,htmlMode=false;
         const saveRange=()=>{const sel=getSelection();if(sel?.rangeCount&&editor.contains(sel.anchorNode))savedRange=sel.getRangeAt(0).cloneRange();};
         const restoreRange=()=>{editor.focus();if(savedRange){const sel=getSelection();sel.removeAllRanges();sel.addRange(savedRange);}};
-        const sync=()=>{source.value=editor.innerHTML;source.dispatchEvent(new Event('input',{bubbles:true}));saveRange();};
-        const applyStyle=(property,value)=>{restoreRange();const sel=getSelection();if(!sel?.rangeCount)return;const range=sel.getRangeAt(0);if(range.collapsed)return;const span=document.createElement('span');span.style[property]=value;try{range.surroundContents(span);}catch{span.append(range.extractContents());range.insertNode(span);}sel.removeAllRanges();const after=document.createRange();after.selectNodeContents(span);sel.addRange(after);sync();};
+        const limited=value=>source.maxLength>0?String(value).slice(0,source.maxLength):String(value);
+        const sync=()=>{source.value=limited(htmlMode?htmlSource.value:editor.innerHTML);source.dispatchEvent(new Event('input',{bubbles:true}));if(!htmlMode)saveRange();};
+        const applyStyle=(property,value)=>{restoreRange();const sel=getSelection();if(!sel?.rangeCount)return;const range=sel.getRangeAt(0);if(range.collapsed){document.execCommand(property==='color'?'foreColor':'styleWithCSS',false,property==='color'?value:true);return;}const span=document.createElement('span');span.style[property]=value;try{range.surroundContents(span);}catch{span.append(range.extractContents());range.insertNode(span);}sel.removeAllRanges();const after=document.createRange();after.selectNodeContents(span);sel.addRange(after);sync();};
+        const command=(name,value=null)=>{if(htmlMode)return;restoreRange();document.execCommand('styleWithCSS',false,true);document.execCommand(name,false,value);sync();};
+        const toggleHtml=()=>{htmlMode=!htmlMode;const button=toolbar.querySelector('[data-rich-html]');button.classList.toggle('active',htmlMode);if(htmlMode){htmlSource.value=editor.innerHTML;editor.hidden=true;htmlSource.hidden=false;htmlSource.focus();}else{editor.innerHTML=sanitizeRichHtml(htmlSource.value);htmlSource.hidden=true;editor.hidden=false;sync();editor.focus();}};
         editor.addEventListener('input',sync);editor.addEventListener('keyup',saveRange);editor.addEventListener('mouseup',saveRange);editor.addEventListener('focus',saveRange);
         editor.addEventListener('keydown',event=>{if(editor.dataset.singleLine==='true'&&event.key==='Enter')event.preventDefault();});
-        toolbar.querySelectorAll('[data-rich-cmd]').forEach(btn=>btn.addEventListener('mousedown',event=>event.preventDefault()));
-        toolbar.querySelectorAll('[data-rich-cmd]').forEach(btn=>btn.addEventListener('click',()=>{restoreRange();document.execCommand(btn.dataset.richCmd,false,null);sync();}));
-        toolbar.querySelector('[data-rich-thin]').addEventListener('mousedown',event=>event.preventDefault());toolbar.querySelector('[data-rich-thin]').addEventListener('click',()=>applyStyle('fontWeight','300'));toolbar.querySelector('[data-rich-normal]').addEventListener('mousedown',event=>event.preventDefault());toolbar.querySelector('[data-rich-normal]').addEventListener('click',()=>applyStyle('fontWeight','400'));
-        toolbar.querySelector('[data-rich-size]').addEventListener('change',event=>{if(event.target.value)applyStyle('fontSize',`${event.target.value}px`);event.target.value='';});
-        toolbar.querySelector('[data-rich-color]').addEventListener('input',event=>applyStyle('color',event.target.value));
-        toolbar.querySelector('[data-rich-clear]').addEventListener('mousedown',event=>event.preventDefault());toolbar.querySelector('[data-rich-clear]').addEventListener('click',()=>{restoreRange();document.execCommand('removeFormat',false,null);sync();});
-        shell.append(toolbar,editor);source.after(shell);
-        source._richEditor=editor;source._richSyncFromSource=()=>{editor.innerHTML=sanitizeRichHtml(source.value);};source._richSyncFromSource();
+        htmlSource.addEventListener('input',sync);
+        toolbar.querySelectorAll('button').forEach(btn=>btn.addEventListener('mousedown',event=>event.preventDefault()));
+        toolbar.querySelectorAll('[data-rich-cmd]').forEach(btn=>btn.addEventListener('click',()=>command(btn.dataset.richCmd)));
+        toolbar.querySelector('[data-rich-font]').addEventListener('change',event=>command('fontName',event.target.value));
+        toolbar.querySelector('[data-rich-size]').addEventListener('change',event=>applyStyle('fontSize',`${event.target.value}px`));
+        toolbar.querySelector('[data-rich-block]').addEventListener('change',event=>command('formatBlock',event.target.value));
+        toolbar.querySelector('[data-rich-color]').addEventListener('input',event=>{event.target.parentElement.style.setProperty('--rich-swatch',event.target.value);command('foreColor',event.target.value);});
+        toolbar.querySelector('[data-rich-highlight]').addEventListener('input',event=>{event.target.parentElement.style.setProperty('--rich-swatch',event.target.value);command('hiliteColor',event.target.value);});
+        toolbar.querySelector('[data-rich-link]').addEventListener('click',()=>{if(htmlMode)return;const href=prompt('연결할 주소를 입력해 주세요.','https://');if(!href)return;try{const url=new URL(href,location.href);if(!['http:','https:','mailto:'].includes(url.protocol))throw new Error();command('createLink',url.href);}catch{notify('올바른 링크 주소를 입력해 주세요.','error');}});
+        toolbar.querySelector('[data-rich-html]').addEventListener('click',toggleHtml);
+        toolbar.querySelector('[data-rich-clear]').addEventListener('click',()=>command('removeFormat'));
+        shell.append(toolbar,editor,htmlSource);source.after(shell);
+        source._richEditor=editor;source._richHtmlSource=htmlSource;source._richSyncFromSource=()=>{const clean=sanitizeRichHtml(source.value);editor.innerHTML=clean;htmlSource.value=clean;};source._richSyncFromSource();
       });
     }
     const formatDate = value => { if(!value) return ""; const date = value?.toDate ? value.toDate() : new Date(value); return Number.isNaN(date.getTime()) ? String(value) : new Intl.DateTimeFormat("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit"}).format(date); };
@@ -482,7 +534,20 @@
       root.style.setProperty("--paper-right-image",book.paperRightImage?`url("${safeUrl(book.paperRightImage)}")`:"none");
       document.querySelector('meta[name="theme-color"]').setAttribute("content",book.cover||DEFAULT_THEME.cover);
     }
-    function updateBodyFlags(){ document.body.classList.toggle("is-owner",state.isOwner&&!state.preview);document.body.classList.toggle("is-friend",state.isFriend); }
+    function updateMyHomeButton(){
+      const button=$('myHomeBtn');if(!button)return;
+      const mySlug=state.profile?.slug||'';
+      const visitingOther=Boolean(state.user&&mySlug&&state.ownerId&&state.ownerId!==state.user.uid);
+      button.hidden=!visitingOther;
+      if(visitingOther)button.title=`#/${mySlug} · 내 다이어리로 돌아가기`;
+    }
+    function goToMyDiary(){
+      if(!state.user){openAuth(false);return;}
+      const mySlug=state.profile?.slug||'';
+      if(!mySlug){notify('내 다이어리 주소를 찾지 못했어요.','error');return;}
+      closeLibrary();closeDrawer();location.hash=`#/${mySlug}`;
+    }
+    function updateBodyFlags(){ document.body.classList.toggle("is-owner",state.isOwner&&!state.preview);document.body.classList.toggle("is-friend",state.isFriend);updateMyHomeButton(); }
     function getBook(bookId){ return state.books.find(item=>item.id===bookId); }
     function sorted(list){ return [...list].sort((a,b)=>(a.order??999)-(b.order??999)||(a.createdAt?.seconds??0)-(b.createdAt?.seconds??0)); }
     function sortedFriends(list=state.friends){return [...list].sort((a,b)=>(a.order??Number.MAX_SAFE_INTEGER)-(b.order??Number.MAX_SAFE_INTEGER)||(a.createdAt?.seconds??0)-(b.createdAt?.seconds??0)||String(a.displayName||a.slug||'').localeCompare(String(b.displayName||b.slug||'')));}
@@ -499,7 +564,7 @@
 
     function renderAll(){
       $('loadingCover').hidden=true;
-      if(!state.book){ $('workspace').hidden=true;$('landing').hidden=false;renderLibrary();return; }
+      if(!state.book){ $('workspace').hidden=true;$('landing').hidden=false;updateMyHomeButton();renderLibrary();return; }
       $('landing').hidden=true;$('workspace').hidden=false;
       applyTheme(state.book);updateBodyFlags();updateBrowserMeta();
       $('brandTitle').textContent=richPlain(state.home?.title||state.profile?.displayName||"My Story Diary");
@@ -979,7 +1044,7 @@
       const fit=['contain','cover','auto'].includes(value)?value:'contain';$('photoFitInput').value=fit;document.querySelectorAll('input[name="photoFit"]').forEach(input=>input.checked=input.value===fit);$('photoPreview')?.classList.toggle('fit-cover',fit==='cover');$('photoPreview')?.classList.toggle('fit-contain',fit==='contain');$('photoPreview')?.classList.toggle('fit-auto',fit==='auto');
     }
     function bindStaticEvents(){
-      $('brandBtn').addEventListener('click',openLibrary);$('libraryBtn').addEventListener('click',openLibrary);$('changeBookBtn').addEventListener('click',openLibrary);$('closeLibraryBtn').addEventListener('click',closeLibrary);$('libraryBackdrop').addEventListener('click',closeLibrary);$('adminBtn').addEventListener('click',()=>{state.preview=false;updateBodyFlags();openDrawer('book');});$('closeDrawerBtn').addEventListener('click',closeDrawer);$('drawerBackdrop').addEventListener('click',closeDrawer);document.querySelectorAll('.drawer-tab').forEach(btn=>btn.addEventListener('click',()=>selectDrawerTab(btn.dataset.drawerTab)));$('newBookBtn').addEventListener('click',()=>openBookModal());$('newMenuBtn').addEventListener('click',()=>openMenuModal());$('quickAddBtn').addEventListener('click',()=>openContentModal());$('drawerAddContentBtn').addEventListener('click',()=>openContentModal());$('saveBookBtn').addEventListener('click',saveBookSettings);$('deleteBookBtn').addEventListener('click',deleteCurrentBook);$('bookForm').addEventListener('submit',createOrEditBook);$('menuForm').addEventListener('submit',saveMenu);$('contentForm').addEventListener('submit',saveContent);$('photoForm').addEventListener('submit',savePhoto);$('loginForm').addEventListener('submit',login);$('signupForm').addEventListener('submit',signUp);$('showSignupBtn').addEventListener('click',()=>openAuth(true));$('showLoginBtn').addEventListener('click',()=>openAuth(false));$('landingAuthBtn').addEventListener('click',()=>openAuth(true));$('demoBtn').addEventListener('click',()=>{location.hash='#/demo/book/sample';resolveRoute();});$('authBtn').addEventListener('click',()=>state.user?logout():openAuth(false));$('shareBtn').addEventListener('click',()=>navigator.clipboard.writeText(buildHomeLink(state.slug,state.book?.id)).then(()=>notify('현재 다이어리 링크를 복사했어요.')));$('copyMyLinkBtn').addEventListener('click',()=>navigator.clipboard.writeText($('myLinkInput').value).then(()=>notify('다이어리 링크를 복사했어요.')));$('sendFriendBtn').addEventListener('click',sendFriendRequest);$('addFriendsMenuBtn').addEventListener('click',addFriendsMenu);$('linkImageInput').addEventListener('change',()=>previewLinkImage($('linkImageInput').files?.[0]));$('clearLinkImageBtn').addEventListener('click',clearLinkImage);$('editLinkImageBtn').addEventListener('click',()=>openImageEditor('link',{blob:state.tempHomeAsset?.blob,url:state.tempHomeAsset?.preview||state.home?.linkImage}));$('downloadOgImageBtn').addEventListener('click',downloadOgImage);$('imageEditorCloseBtn').addEventListener('click',()=>closeImageEditor());$('imageEditorCancelBtn').addEventListener('click',()=>closeImageEditor());$('imageEditorApplyBtn').addEventListener('click',applyImageEditor);$('imageCropRatioInput').addEventListener('change',event=>{if(!state.imageEditor)return;state.imageEditor.ratio=event.target.value;state.imageEditor.offsetX=0;state.imageEditor.offsetY=0;renderImageEditor({resize:true});});$('imageZoomInput').addEventListener('input',event=>{if(!state.imageEditor)return;state.imageEditor.zoom=Number(event.target.value);renderImageEditor();});$('imagePositionXInput').addEventListener('input',event=>{if(!state.imageEditor)return;const canvas=$('imageEditorCanvas');state.imageEditor.offsetX=(Number(event.target.value)/100)*(canvas.width*.5);renderImageEditor();});$('imagePositionYInput').addEventListener('input',event=>{if(!state.imageEditor)return;const canvas=$('imageEditorCanvas');state.imageEditor.offsetY=(Number(event.target.value)/100)*(canvas.height*.5);renderImageEditor();});$('imageRotateInput').addEventListener('input',event=>{if(!state.imageEditor)return;state.imageEditor.rotation=Number(event.target.value);renderImageEditor();});$('rotateLeftBtn').addEventListener('click',()=>{if(state.imageEditor){state.imageEditor.rotation=Math.max(-180,Math.min(180,state.imageEditor.rotation-90));renderImageEditor({resize:state.imageEditor.ratio==='original'});}});$('rotateRightBtn').addEventListener('click',()=>{if(state.imageEditor){state.imageEditor.rotation=Math.max(-180,Math.min(180,state.imageEditor.rotation+90));renderImageEditor({resize:state.imageEditor.ratio==='original'});}});$('imageEditorResetBtn').addEventListener('click',()=>resetImageEditor(false));$('imageEditorCenterBtn').addEventListener('click',()=>resetImageEditor(true));bindImageEditorCanvas();document.querySelectorAll('input[name="entryImageFit"]').forEach(input=>input.addEventListener('change',()=>setEntryImageFit(input.value)));document.querySelectorAll('input[name="photoFit"]').forEach(input=>input.addEventListener('change',()=>setPhotoFit(input.value)));$('previewBtn').addEventListener('click',()=>{state.preview=true;updateBodyFlags();closeDrawer();notify('방문자 화면으로 미리보는 중이에요. 새로고침하면 편집 화면으로 돌아와요.');});document.querySelectorAll('[data-close-modal]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.closeModal)));document.querySelectorAll('.modal-backdrop').forEach(backdrop=>backdrop.addEventListener('click',event=>{if(event.target!==backdrop)return;if(backdrop.id==='imageEditorModal')closeImageEditor();else backdrop.hidden=true;}));document.querySelectorAll('[data-menu-type]').forEach(btn=>btn.addEventListener('click',()=>{$('menuTypeInput').value=btn.dataset.menuType;document.querySelectorAll('[data-menu-type]').forEach(item=>item.classList.toggle('active',item===btn));updateMenuTypeFields();}));document.querySelectorAll('[data-page-template]').forEach(btn=>btn.addEventListener('click',()=>setPageTemplate(btn.dataset.pageTemplate)));$('entryFilesInput').addEventListener('change',()=>addEntryFiles($('entryFilesInput').files||[]));$('photoFileInput').addEventListener('change',()=>{state.photoFile=$('photoFileInput').files?.[0]||null;previewFiles(state.photoFile?[state.photoFile]:[],'photoPreview');$('photoFileName').textContent=state.photoFile?.name||'선택된 사진 없음';$('photoEditBtn').hidden=!state.photoFile;});$('photoEditBtn').addEventListener('click',()=>openImageEditor('photo',{file:state.photoFile}));
+      $('myHomeBtn').addEventListener('click',goToMyDiary);$('brandBtn').addEventListener('click',openLibrary);$('libraryBtn').addEventListener('click',openLibrary);$('changeBookBtn').addEventListener('click',openLibrary);$('closeLibraryBtn').addEventListener('click',closeLibrary);$('libraryBackdrop').addEventListener('click',closeLibrary);$('adminBtn').addEventListener('click',()=>{state.preview=false;updateBodyFlags();openDrawer('book');});$('closeDrawerBtn').addEventListener('click',closeDrawer);$('drawerBackdrop').addEventListener('click',closeDrawer);document.querySelectorAll('.drawer-tab').forEach(btn=>btn.addEventListener('click',()=>selectDrawerTab(btn.dataset.drawerTab)));$('newBookBtn').addEventListener('click',()=>openBookModal());$('newMenuBtn').addEventListener('click',()=>openMenuModal());$('quickAddBtn').addEventListener('click',()=>openContentModal());$('drawerAddContentBtn').addEventListener('click',()=>openContentModal());$('saveBookBtn').addEventListener('click',saveBookSettings);$('deleteBookBtn').addEventListener('click',deleteCurrentBook);$('bookForm').addEventListener('submit',createOrEditBook);$('menuForm').addEventListener('submit',saveMenu);$('contentForm').addEventListener('submit',saveContent);$('photoForm').addEventListener('submit',savePhoto);$('loginForm').addEventListener('submit',login);$('signupForm').addEventListener('submit',signUp);$('showSignupBtn').addEventListener('click',()=>openAuth(true));$('showLoginBtn').addEventListener('click',()=>openAuth(false));$('landingAuthBtn').addEventListener('click',()=>openAuth(true));$('demoBtn').addEventListener('click',()=>{location.hash='#/demo/book/sample';resolveRoute();});$('authBtn').addEventListener('click',()=>state.user?logout():openAuth(false));$('shareBtn').addEventListener('click',()=>navigator.clipboard.writeText(buildHomeLink(state.slug,state.book?.id)).then(()=>notify('현재 다이어리 링크를 복사했어요.')));$('copyMyLinkBtn').addEventListener('click',()=>navigator.clipboard.writeText($('myLinkInput').value).then(()=>notify('다이어리 링크를 복사했어요.')));$('sendFriendBtn').addEventListener('click',sendFriendRequest);$('addFriendsMenuBtn').addEventListener('click',addFriendsMenu);$('linkImageInput').addEventListener('change',()=>previewLinkImage($('linkImageInput').files?.[0]));$('clearLinkImageBtn').addEventListener('click',clearLinkImage);$('editLinkImageBtn').addEventListener('click',()=>openImageEditor('link',{blob:state.tempHomeAsset?.blob,url:state.tempHomeAsset?.preview||state.home?.linkImage}));$('downloadOgImageBtn').addEventListener('click',downloadOgImage);$('imageEditorCloseBtn').addEventListener('click',()=>closeImageEditor());$('imageEditorCancelBtn').addEventListener('click',()=>closeImageEditor());$('imageEditorApplyBtn').addEventListener('click',applyImageEditor);$('imageCropRatioInput').addEventListener('change',event=>{if(!state.imageEditor)return;state.imageEditor.ratio=event.target.value;state.imageEditor.offsetX=0;state.imageEditor.offsetY=0;renderImageEditor({resize:true});});$('imageZoomInput').addEventListener('input',event=>{if(!state.imageEditor)return;state.imageEditor.zoom=Number(event.target.value);renderImageEditor();});$('imagePositionXInput').addEventListener('input',event=>{if(!state.imageEditor)return;const canvas=$('imageEditorCanvas');state.imageEditor.offsetX=(Number(event.target.value)/100)*(canvas.width*.5);renderImageEditor();});$('imagePositionYInput').addEventListener('input',event=>{if(!state.imageEditor)return;const canvas=$('imageEditorCanvas');state.imageEditor.offsetY=(Number(event.target.value)/100)*(canvas.height*.5);renderImageEditor();});$('imageRotateInput').addEventListener('input',event=>{if(!state.imageEditor)return;state.imageEditor.rotation=Number(event.target.value);renderImageEditor();});$('rotateLeftBtn').addEventListener('click',()=>{if(state.imageEditor){state.imageEditor.rotation=Math.max(-180,Math.min(180,state.imageEditor.rotation-90));renderImageEditor({resize:state.imageEditor.ratio==='original'});}});$('rotateRightBtn').addEventListener('click',()=>{if(state.imageEditor){state.imageEditor.rotation=Math.max(-180,Math.min(180,state.imageEditor.rotation+90));renderImageEditor({resize:state.imageEditor.ratio==='original'});}});$('imageEditorResetBtn').addEventListener('click',()=>resetImageEditor(false));$('imageEditorCenterBtn').addEventListener('click',()=>resetImageEditor(true));bindImageEditorCanvas();document.querySelectorAll('input[name="entryImageFit"]').forEach(input=>input.addEventListener('change',()=>setEntryImageFit(input.value)));document.querySelectorAll('input[name="photoFit"]').forEach(input=>input.addEventListener('change',()=>setPhotoFit(input.value)));$('previewBtn').addEventListener('click',()=>{state.preview=true;updateBodyFlags();closeDrawer();notify('방문자 화면으로 미리보는 중이에요. 새로고침하면 편집 화면으로 돌아와요.');});document.querySelectorAll('[data-close-modal]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.closeModal)));document.querySelectorAll('.modal-backdrop').forEach(backdrop=>backdrop.addEventListener('click',event=>{if(event.target!==backdrop)return;if(backdrop.id==='imageEditorModal')closeImageEditor();else backdrop.hidden=true;}));document.querySelectorAll('[data-menu-type]').forEach(btn=>btn.addEventListener('click',()=>{$('menuTypeInput').value=btn.dataset.menuType;document.querySelectorAll('[data-menu-type]').forEach(item=>item.classList.toggle('active',item===btn));updateMenuTypeFields();}));document.querySelectorAll('[data-page-template]').forEach(btn=>btn.addEventListener('click',()=>setPageTemplate(btn.dataset.pageTemplate)));$('entryFilesInput').addEventListener('change',()=>addEntryFiles($('entryFilesInput').files||[]));$('photoFileInput').addEventListener('change',()=>{state.photoFile=$('photoFileInput').files?.[0]||null;previewFiles(state.photoFile?[state.photoFile]:[],'photoPreview');$('photoFileName').textContent=state.photoFile?.name||'선택된 사진 없음';$('photoEditBtn').hidden=!state.photoFile;});$('photoEditBtn').addEventListener('click',()=>openImageEditor('photo',{file:state.photoFile}));
       $('homeTitleInput').addEventListener('input',()=>{state.home={...(state.home||{}),title:$('homeTitleInput').value};$('brandTitle').textContent=state.home.title||'My Story Diary';$('libraryTitle').textContent=state.home.title||'나의 다이어리';});$('coverHiddenInput').addEventListener('change',()=>{state.book={...state.book,coverHidden:$('coverHiddenInput').checked};renderMenus();renderSpread();renderMenuAdmin();});['bookTitleInput','bookSubtitleInput','coverMenuNameInput','coverEyebrowInput','coverTitleInput','coverSubtitleInput','coverFooterInput','coverCaptionInput','coverNoteInput','coverAlignInput','bookPublicInput'].forEach(id=>$(id).addEventListener('input',()=>{const map={bookTitleInput:'title',bookSubtitleInput:'subtitle',coverMenuNameInput:'coverMenuName',coverEyebrowInput:'coverEyebrow',coverTitleInput:'coverTitle',coverSubtitleInput:'coverSubtitle',coverFooterInput:'coverFooter',coverCaptionInput:'coverCaption',coverNoteInput:'coverNote',coverAlignInput:'coverAlign',bookPublicInput:'isPublic'};const key=map[id];state.book={...state.book,[key]:key==='isPublic'?$(id).value==='true':$(id).value};$('currentBookTitle').textContent=richPlain(state.book.title,'');renderMenus();renderSpread();renderLibrary();}));
       window.addEventListener('hashchange',resolveRoute);
     }
