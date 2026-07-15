@@ -166,6 +166,37 @@
     .rich-content{white-space:normal;word-break:break-word}.rich-content p{margin:.45em 0}.rich-content ul,.rich-content ol{padding-left:1.4em}.rich-content span{max-width:100%}
     .og-help{margin-top:9px;padding:9px 11px;border-radius:11px;background:var(--accent-soft);color:var(--accent-deep);font-size:.67rem;line-height:1.55}
 
+
+    /* 2026-07: locks, home shortcut, two-page photo slots, guestbook */
+    .my-diary-btn[hidden]{display:none!important}
+    .lock-badge{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent-deep);font-size:.58rem;font-weight:900;vertical-align:middle}
+    .access-note{margin-top:8px;padding:9px 11px;border:1px dashed var(--line);border-radius:11px;background:var(--surface-alt);font-size:.65rem;color:var(--muted);line-height:1.55}
+    .access-gate-modal{width:min(460px,calc(100vw - 24px));text-align:center}
+    .access-gate-icon{width:74px;height:74px;margin:6px auto 14px;border-radius:24px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-deep);font-size:32px}
+    .access-gate-modal h2{margin:0;font:500 1.75rem/1.2 Georgia,"Times New Roman",serif}
+    .access-gate-modal p{margin:10px 0 18px;color:var(--muted);font-size:.76rem}
+    .side-photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+    .side-photo-slot{border:1px dashed var(--line);border-radius:16px;padding:11px;background:color-mix(in srgb,var(--surface) 76%,transparent)}
+    .side-photo-slot strong{display:block;font-size:.72rem;margin-bottom:7px}
+    .side-photo-preview{height:150px;border-radius:12px;overflow:hidden;background:var(--surface-alt);display:grid;place-items:center;color:var(--muted);font-size:.7rem;border:1px solid var(--frame)}
+    .side-photo-preview img{width:100%;height:100%;object-fit:contain;cursor:pointer}
+    .side-photo-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+    .page-side-photo{width:100%;max-height:330px;margin:0 0 17px;border:1px solid var(--frame);border-radius:16px;background:var(--surface-alt);overflow:hidden;display:grid;place-items:center}
+    .page-side-photo img{width:100%;max-height:330px;object-fit:contain;cursor:zoom-in}
+    .guestbook-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px}
+    .guestbook-toolbar .btn{padding:7px 11px;font-size:.66rem}
+    .guestbook-list{display:grid;gap:10px}
+    .guestbook-card{border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--surface) 86%,transparent);padding:13px}
+    .guestbook-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .guestbook-card-head strong{font-size:.78rem}.guestbook-card-head small{display:block;color:var(--muted);font-size:.6rem;margin-top:2px}
+    .guestbook-card-body{margin-top:8px;font-size:.76rem;line-height:1.72}
+    .guestbook-card-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+    .album-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:9px;margin-bottom:8px}
+    .album-header-row .page-heading{flex:1}
+    .album-header-row .btn{flex:0 0 auto;margin-top:4px;padding:7px 11px;font-size:.66rem}
+    .menu-access-hint{font-size:.63rem;color:var(--muted);margin-top:6px}
+    @media(max-width:760px){.side-photo-grid{grid-template-columns:1fr}.my-diary-btn{padding-inline:10px}}
+
 </style>
 </head>
 <body>
@@ -177,6 +208,7 @@
       <button class="brand" id="brandBtn" type="button"><span class="brand-icon">📚</span><span class="brand-copy"><strong id="brandTitle">My Story Diary</strong><span id="brandSub">personal pair diary</span></span></button>
       <div class="header-actions">
         <button class="bookshelf-btn" id="libraryBtn" type="button" aria-label="다이어리 보관함 열기" title="다이어리 보관함 열기"><span class="shelf-icon" aria-hidden="true"><i></i><i></i><i></i></span></button>
+        <button class="btn my-diary-btn" id="myDiaryBtn" type="button" hidden>내 다이어리</button>
         <button class="btn admin-only" id="adminBtn" type="button">다이어리 꾸미기</button>
         <button class="btn" id="shareBtn" type="button">링크 복사</button>
         <button class="btn primary" id="authBtn" type="button">로그인</button>
@@ -228,6 +260,9 @@
         <div class="section-box"><h3>다이어리 홈페이지</h3><p class="section-help">내 다이어리 전체에 표시할 이름이에요.</p>
           <div class="field"><label for="homeTitleInput">홈페이지 이름</label><input id="homeTitleInput" maxlength="60" placeholder="나의 다이어리" /></div>
           <div class="field"><label>내 다이어리 주소</label><input id="homeSlugInput" readonly /></div>
+          <label class="toggle-row"><input id="homeLockEnabledInput" type="checkbox" /> 내 홈페이지 전체에 비밀번호 걸기</label>
+          <div class="field" id="homePasswordField"><label for="homePasswordInput">홈페이지 비밀번호</label><input id="homePasswordInput" type="password" maxlength="80" placeholder="변경할 때만 입력" autocomplete="new-password" /></div>
+          <div class="access-note">본인 계정은 비밀번호 없이 들어가요. GitHub Pages만 사용하는 방식이라 이 잠금은 방문 화면을 막는 용도이며, 완전한 보안 잠금은 Firebase Functions 같은 서버 검증이 필요해요.</div>
         </div>
         <div class="section-box"><h3>현재 다이어리</h3><p class="section-help">오른쪽 편집창을 열어둔 채 왼쪽 다이어리에서 결과를 바로 확인할 수 있어요.</p>
           <div class="field"><label for="bookTitleInput">다이어리 제목</label><input id="bookTitleInput" maxlength="60" /></div>
@@ -240,6 +275,8 @@
           <div class="field"><label for="coverFooterInput">표지 아래 문구</label><input id="coverFooterInput" data-rich="true" data-rich-single="true" maxlength="100" /></div>
           <div class="field"><label for="coverAlignInput">표지 정렬</label><select id="coverAlignInput"><option value="center">가운데</option><option value="left">왼쪽</option><option value="right">오른쪽</option></select></div>
           <div class="field"><label for="bookPublicInput">공개 설정</label><select id="bookPublicInput"><option value="true">전체 공개</option><option value="false">나와 친구만</option></select></div>
+          <label class="toggle-row"><input id="bookLockEnabledInput" type="checkbox" /> 이 다이어리에만 비밀번호 걸기</label>
+          <div class="field" id="bookPasswordField"><label for="bookPasswordInput">다이어리 비밀번호</label><input id="bookPasswordInput" type="password" maxlength="80" placeholder="변경할 때만 입력" autocomplete="new-password" /></div>
         </div>
         <div class="section-box"><h3>표지 오른쪽 페이지</h3>
           <div class="field"><label for="coverCaptionInput">사진 캡션</label><input id="coverCaptionInput" data-rich="true" data-rich-single="true" maxlength="100" /></div>
@@ -289,13 +326,17 @@
     <div class="field"><label>다이어리 제목</label><input id="newBookTitle" maxlength="60" required placeholder="새로운 페어 또는 세계관" /></div>
     <div class="field"><label>짧은 설명</label><input id="newBookSubtitle" maxlength="120" placeholder="이 다이어리에 담을 이야기" /></div>
     <div class="inline-fields"><div class="field"><label>표지 색</label><input id="newBookColor" type="color" value="#d88da6" /></div><div class="field"><label>표지 음영</label><input id="newBookDeepColor" type="color" value="#a95170" /></div></div>
+    <label class="toggle-row"><input id="newBookLockEnabled" type="checkbox" /> 이 다이어리에 비밀번호 걸기</label>
+    <div class="field"><label for="newBookPassword">다이어리 비밀번호</label><input id="newBookPassword" type="password" maxlength="80" placeholder="잠글 때 입력" autocomplete="new-password" /></div>
     <div class="modal-actions"><button class="btn" data-close-modal="bookModal" type="button">취소</button><button class="btn primary" type="submit">다이어리 만들기</button></div>
   </form></div></div></div>
 
   <div class="modal-backdrop" id="menuModal" hidden><div class="modal"><div class="modal-head"><h2 id="menuModalTitle">메뉴 추가</h2><button class="icon-btn" data-close-modal="menuModal" type="button">✕</button></div><div class="modal-body"><form id="menuForm">
     <input id="editingMenuId" type="hidden" /><div class="field"><label>메뉴 이름</label><input id="menuNameInput" maxlength="30" required placeholder="세계관 소개" /></div><div class="field"><label>메뉴 설명</label><input id="menuDescriptionInput" maxlength="120" placeholder="메뉴 첫 장에 보일 설명" /></div>
-    <div class="field"><label>메뉴 형태</label><div class="type-grid" id="menuTypeGrid"><button class="type-card active" data-menu-type="pages" type="button"><strong>자유 페이지</strong><span>소개·설정·자료 정리</span></button><button class="type-card" data-menu-type="persona" type="button"><strong>페르소나 보관함</strong><span>Information · Prompt · Memo</span></button><button class="type-card" data-menu-type="board" type="button"><strong>기록 게시판</strong><span>글과 사진을 포토카드로</span></button><button class="type-card" data-menu-type="gallery" type="button"><strong>친구 사진첩</strong><span>친구도 사진을 붙이는 공간</span></button><button class="type-card" data-menu-type="friends" type="button"><strong>친구 목록</strong><span>친구 링크 이미지를 모아 바로 방문</span></button></div><input id="menuTypeInput" type="hidden" value="pages" /></div>
+    <div class="field"><label>메뉴 형태</label><div class="type-grid" id="menuTypeGrid"><button class="type-card active" data-menu-type="pages" type="button"><strong>자유 페이지</strong><span>소개·설정·자료 정리</span></button><button class="type-card" data-menu-type="persona" type="button"><strong>페르소나 보관함</strong><span>Information · Prompt · Memo</span></button><button class="type-card" data-menu-type="board" type="button"><strong>기록 게시판</strong><span>글과 사진을 포토카드로</span></button><button class="type-card" data-menu-type="gallery" type="button"><strong>방명록</strong><span>왼쪽 방명록 · 오른쪽 친구 앨범</span></button><button class="type-card" data-menu-type="friends" type="button"><strong>친구 목록</strong><span>친구 링크 이미지를 모아 바로 방문</span></button></div><input id="menuTypeInput" type="hidden" value="pages" /></div>
     <div class="field" id="boardLayoutField" hidden><label for="boardLayoutInput">기록 속지</label><select id="boardLayoutInput"><option value="cards">포토카드형 · 사진 카드 목록</option><option value="list">게시판 목록형 · 사진 없이 제목 리스트</option></select><div class="board-layout-help">기록 메뉴를 두 개 만들어 서로 다른 속지로 사용할 수도 있어요.</div></div>
+    <div class="field"><label for="menuAccessInput">메뉴 공개 범위</label><select id="menuAccessInput"><option value="public">일반 공개</option><option value="owner">나만 보기</option><option value="password">비밀번호 입력 후 보기</option></select><div class="menu-access-hint">‘나만 보기’는 다른 사람의 메뉴 목록에서 완전히 숨겨져요.</div></div>
+    <div class="field" id="menuPasswordField"><label for="menuPasswordInput">메뉴 비밀번호</label><input id="menuPasswordInput" type="password" maxlength="80" placeholder="변경할 때만 입력" autocomplete="new-password" /></div>
     <label class="toggle-row"><input id="menuHiddenInput" type="checkbox" /> 이 메뉴를 방문자에게 숨기기</label>
     <div class="modal-actions"><button class="btn" data-close-modal="menuModal" type="button">취소</button><button class="btn primary" type="submit">저장</button></div>
   </form></div></div></div>
@@ -324,12 +365,20 @@
     </div>
     <div id="personaFields" hidden><div class="field"><label>INFORMATION</label><textarea id="personaInformationInput" data-rich="true" data-rich-single="false" maxlength="10000" style="min-height:190px" placeholder="Name, ability, affiliation, profile information..."></textarea></div><div class="field"><label>PROMPT</label><textarea id="personaPromptInput" maxlength="12000" style="min-height:180px" placeholder="Image generation prompt in English"></textarea></div><div class="field"><label>MEMO</label><textarea id="personaMemoInput" data-rich="true" data-rich-single="false" maxlength="10000" style="min-height:160px"></textarea></div></div>
     <div id="boardFields" hidden><div class="inline-fields"><div class="field"><label>기록 번호 (선택)</label><input id="postNumberInput" maxlength="12" placeholder="01" /></div><div class="field"><label>날짜</label><input id="postDateInput" type="date" /></div></div><div class="field"><label>제목</label><input id="postTitleInput" data-rich="true" data-rich-single="true" maxlength="120" /></div><div class="field"><label>태그·기분</label><input id="postTagsInput" maxlength="200" placeholder="여름, 행복, 여행" /></div><div class="field"><label>기록</label><textarea id="postBodyInput" data-rich="true" data-rich-single="false" maxlength="12000" style="min-height:210px"></textarea></div></div>
-    <div class="field"><label>사진 표시 방식</label><div class="fit-choice"><label><input type="radio" name="entryImageFit" value="contain" checked /> 원본 비율</label><label><input type="radio" name="entryImageFit" value="cover" /> 틀 채우기</label><label><input type="radio" name="entryImageFit" value="auto" /> 사진에 맞게 틀 조정</label></div><input id="entryImageFitInput" type="hidden" value="contain" /></div>
+    <div class="field"><label>양쪽 페이지 대표 사진</label><div class="side-photo-grid">
+      <div class="side-photo-slot"><strong>왼쪽 페이지 사진</strong><div class="side-photo-preview" id="leftSidePhotoPreview">사진 없음</div><div class="side-photo-actions"><label class="btn soft small" for="leftSidePhotoInput">선택</label><input class="file-input" id="leftSidePhotoInput" type="file" accept="image/jpeg,image/png,image/webp" /><button class="btn small" id="editLeftSidePhotoBtn" type="button">편집</button><button class="btn small" id="clearLeftSidePhotoBtn" type="button">지우기</button></div></div>
+      <div class="side-photo-slot"><strong>오른쪽 페이지 사진</strong><div class="side-photo-preview" id="rightSidePhotoPreview">사진 없음</div><div class="side-photo-actions"><label class="btn soft small" for="rightSidePhotoInput">선택</label><input class="file-input" id="rightSidePhotoInput" type="file" accept="image/jpeg,image/png,image/webp" /><button class="btn small" id="editRightSidePhotoBtn" type="button">편집</button><button class="btn small" id="clearRightSidePhotoBtn" type="button">지우기</button></div></div>
+    </div><p class="section-help">모든 소개·페르소나·기록 속지에서 왼쪽과 오른쪽 사진을 따로 사용할 수 있어요.</p></div>
+    <div class="field"><label>추가 사진 표시 방식</label><div class="fit-choice"><label><input type="radio" name="entryImageFit" value="contain" checked /> 원본 비율</label><label><input type="radio" name="entryImageFit" value="cover" /> 틀 채우기</label><label><input type="radio" name="entryImageFit" value="auto" /> 사진에 맞게 틀 조정</label></div><input id="entryImageFitInput" type="hidden" value="contain" /></div>
     <div class="field"><label>사진 (최대 6장)</label><div class="file-row"><label class="file-label" for="entryFilesInput">사진 추가</label><input class="file-input" id="entryFilesInput" type="file" accept="image/jpeg,image/png,image/webp" multiple /><span class="file-name" id="entryFilesName">사진 없이 저장 가능</span></div><div class="sortable-preview" id="entryPreview" hidden></div><p class="drag-note"><strong>사진을 끌어서</strong> 순서를 바꿀 수 있어요. 모바일에서는 ◀ ▶ 버튼을 사용하면 돼요.</p></div>
     <div class="modal-actions"><button class="btn" data-close-modal="contentModal" type="button">취소</button><button class="btn primary" type="submit">저장</button></div>
   </form></div></div></div>
 
-  <div class="modal-backdrop" id="photoModal" hidden><div class="modal"><div class="modal-head"><h2>사진 붙이기</h2><button class="icon-btn" data-close-modal="photoModal" type="button">✕</button></div><div class="modal-body"><form id="photoForm"><div class="field"><label>이름 (선택)</label><input id="photoNameInput" maxlength="30" /></div><div class="field"><label>메시지</label><textarea id="photoMessageInput" data-rich="true" data-rich-single="false" maxlength="600"></textarea></div><div class="field"><label>사진 표시 방식</label><div class="fit-choice"><label><input type="radio" name="photoFit" value="contain" checked /> 원본 비율</label><label><input type="radio" name="photoFit" value="cover" /> 틀 채우기</label><label><input type="radio" name="photoFit" value="auto" /> 사진에 맞게 틀 조정</label></div><input id="photoFitInput" type="hidden" value="contain" /></div><div class="field"><label>사진</label><div class="file-row"><label class="file-label" for="photoFileInput">사진 선택</label><input class="file-input" id="photoFileInput" type="file" accept="image/jpeg,image/png,image/webp" required /><span class="file-name" id="photoFileName">선택된 사진 없음</span></div><button class="btn soft edit-photo-btn" id="photoEditBtn" type="button" hidden>위치 · 회전 · 자르기</button><div class="multi-preview" id="photoPreview" hidden></div></div><div class="modal-actions"><button class="btn" data-close-modal="photoModal" type="button">취소</button><button class="btn primary" type="submit">사진 올리기</button></div></form></div></div></div>
+  <div class="modal-backdrop" id="photoModal" hidden><div class="modal"><div class="modal-head"><h2>앨범에 사진 붙이기</h2><button class="icon-btn" data-close-modal="photoModal" type="button">✕</button></div><div class="modal-body"><form id="photoForm"><div class="field"><label>이름 (선택)</label><input id="photoNameInput" maxlength="30" /></div><div class="field"><label>메시지</label><textarea id="photoMessageInput" data-rich="true" data-rich-single="false" maxlength="600"></textarea></div><div class="field"><label>사진 표시 방식</label><div class="fit-choice"><label><input type="radio" name="photoFit" value="contain" checked /> 원본 비율</label><label><input type="radio" name="photoFit" value="cover" /> 틀 채우기</label><label><input type="radio" name="photoFit" value="auto" /> 사진에 맞게 틀 조정</label></div><input id="photoFitInput" type="hidden" value="contain" /></div><div class="field"><label>사진</label><div class="file-row"><label class="file-label" for="photoFileInput">사진 선택</label><input class="file-input" id="photoFileInput" type="file" accept="image/jpeg,image/png,image/webp" required /><span class="file-name" id="photoFileName">선택된 사진 없음</span></div><button class="btn soft edit-photo-btn" id="photoEditBtn" type="button" hidden>위치 · 회전 · 자르기</button><div class="multi-preview" id="photoPreview" hidden></div></div><div class="modal-actions"><button class="btn" data-close-modal="photoModal" type="button">취소</button><button class="btn primary" type="submit">앨범에 올리기</button></div></form></div></div></div>
+
+  <div class="modal-backdrop" id="guestbookModal" hidden><div class="modal"><div class="modal-head"><h2 id="guestbookModalTitle">방명록 남기기</h2><button class="icon-btn" data-close-modal="guestbookModal" type="button">✕</button></div><div class="modal-body"><form id="guestbookForm"><input id="editingGuestbookId" type="hidden" /><div class="field"><label>이름 (선택)</label><input id="guestbookNameInput" maxlength="40" /></div><div class="field"><label>방명록</label><textarea id="guestbookMessageInput" data-rich="true" data-rich-single="false" maxlength="3000" style="min-height:180px"></textarea></div><div class="modal-actions"><button class="btn" data-close-modal="guestbookModal" type="button">취소</button><button class="btn primary" type="submit">저장</button></div></form></div></div></div>
+
+  <div class="modal-backdrop" id="accessModal" hidden><div class="modal access-gate-modal"><div class="modal-body"><div class="access-gate-icon">🔒</div><h2 id="accessTitle">잠긴 다이어리</h2><p id="accessDescription">비밀번호를 입력하면 다이어리를 펼칠 수 있어요.</p><form id="accessForm"><input id="accessKindInput" type="hidden" /><input id="accessTargetInput" type="hidden" /><div class="field"><label for="accessPasswordInput">비밀번호</label><input id="accessPasswordInput" type="password" maxlength="80" autocomplete="current-password" /></div><div class="error-text" id="accessError"></div><div class="modal-actions" style="justify-content:center"><button class="btn" id="accessBackBtn" type="button">돌아가기</button><button class="btn primary" type="submit">열기</button></div></form></div></div></div>
 
   <div class="modal-backdrop" id="imageEditorModal" hidden><div class="modal image-editor-modal"><div class="modal-head"><h2>사진 위치 · 회전 · 자르기</h2><button class="icon-btn" id="imageEditorCloseBtn" type="button">✕</button></div><div class="modal-body"><div class="image-editor-layout"><div><div class="image-editor-stage"><canvas id="imageEditorCanvas" width="900" height="675"></canvas></div><p class="image-editor-help">사진을 마우스나 손가락으로 직접 끌 수 있어요. 마우스 휠로도 확대·축소할 수 있어요.</p></div><div class="image-editor-controls"><div class="field"><label for="imageCropRatioInput">자르기 비율</label><select id="imageCropRatioInput"><option value="original">자르기 없음 · 원본 비율</option><option value="1">정사각형 · 1:1</option><option value="0.8">세로 포토카드 · 4:5</option><option value="0.75">세로 · 3:4</option><option value="1.5">가로 · 3:2</option><option value="1.7777778">와이드 · 16:9</option></select></div><div class="range-row"><label for="imageZoomInput">확대</label><input id="imageZoomInput" type="range" min="0.25" max="4" step="0.01" value="1" /><output id="imageZoomOutput">100%</output></div><div class="range-row"><label for="imagePositionXInput">가로 위치</label><input id="imagePositionXInput" type="range" min="-100" max="100" step="1" value="0" /><output id="imagePositionXOutput">0</output></div><div class="range-row"><label for="imagePositionYInput">세로 위치</label><input id="imagePositionYInput" type="range" min="-100" max="100" step="1" value="0" /><output id="imagePositionYOutput">0</output></div><div class="range-row"><label for="imageRotateInput">회전</label><input id="imageRotateInput" type="range" min="-180" max="180" step="1" value="0" /><output id="imageRotateOutput">0°</output></div><div class="editor-button-grid"><button class="btn" id="rotateLeftBtn" type="button">↶ 90°</button><button class="btn" id="rotateRightBtn" type="button">↷ 90°</button><button class="btn" id="imageEditorResetBtn" type="button">전부 초기화</button><button class="btn" id="imageEditorCenterBtn" type="button">위치 가운데</button></div><div class="editor-tip">움직이지 않을 때는 가로·세로 위치 슬라이더를 사용해 주세요. 적용 전까지 원본 파일은 바뀌지 않아요.</div><div class="modal-actions"><button class="btn" id="imageEditorCancelBtn" type="button">취소</button><button class="btn primary" id="imageEditorApplyBtn" type="button">편집 적용</button></div></div></div></div></div></div>
 
@@ -361,26 +410,78 @@
     const ASSET_KEYS = { deskImage:["전체 배경","다이어리 바깥 배경"],coverImage:["표지 이미지","이 다이어리의 표지"],paperLeftImage:["왼쪽 속지","왼쪽 페이지 배경"],paperRightImage:["오른쪽 속지","오른쪽 페이지 배경"],coverPhoto:["표지 사진","표지 옆 폴라로이드"] };
     const DEFAULT_THEME = Object.fromEntries(Object.entries(THEME_KEYS).map(([key,value])=>[key,value[1]]));
     const DEFAULT_BOOK = {
-      title:"새 다이어리",subtitle:"",coverEyebrow:"",coverTitle:"MY DIARY",coverSubtitle:"",coverFooter:"",coverCaption:"",coverMenuName:"표지",coverNote:"이 다이어리의 소개를 입력해 주세요.",coverAlign:"center",coverHidden:false,isPublic:true,defaultMenusV2:true,order:0,...DEFAULT_THEME,deskImage:"",coverImage:"",paperLeftImage:"",paperRightImage:"",coverPhoto:""
+      title:"새 다이어리",subtitle:"",coverEyebrow:"",coverTitle:"MY DIARY",coverSubtitle:"",coverFooter:"",coverCaption:"",coverMenuName:"표지",coverNote:"이 다이어리의 소개를 입력해 주세요.",coverAlign:"center",coverHidden:false,isPublic:true,lockEnabled:false,lockHash:"",defaultMenusV2:true,order:0,...DEFAULT_THEME,deskImage:"",coverImage:"",paperLeftImage:"",paperRightImage:"",coverPhoto:""
     };
     const DEMO_BOOKS = [
       {id:"sample",...DEFAULT_BOOK,title:"나의 첫 다이어리",coverTitle:"MY DIARY"}
     ];
     const DEMO_MENUS = {
       sample:[
-        {id:"intro",name:"페어 소개",description:"페어틀·자유 기록·서사 정리 속지",type:"pages",hidden:false,order:0},
-        {id:"persona",name:"페르소나",description:"외형·프롬프트·메모",type:"persona",hidden:false,order:1},
-        {id:"record",name:"일기장",description:"글과 사진을 포토카드처럼 남기는 공간",type:"board",boardLayout:"cards",hidden:false,order:2},
-        {id:"gallery",name:"사진첩",description:"친구와 사진을 나누는 공간",type:"gallery",hidden:false,order:3},
-        {id:"friends",name:"친구",description:"친구 다이어리로 바로 이동하는 링크 목록",type:"friends",hidden:false,order:4}
+        {id:"intro",name:"페어 소개",description:"페어틀·자유 기록·서사 정리 속지",type:"pages",accessMode:"public",hidden:false,order:0},
+        {id:"persona",name:"페르소나",description:"외형·프롬프트·메모",type:"persona",accessMode:"public",hidden:false,order:1},
+        {id:"record",name:"일기장",description:"글과 사진을 포토카드처럼 남기는 공간",type:"board",boardLayout:"cards",accessMode:"public",hidden:false,order:2},
+        {id:"gallery",name:"방명록",description:"왼쪽 방명록 · 오른쪽 친구 앨범",type:"gallery",accessMode:"public",hidden:false,order:3},
+        {id:"friends",name:"친구",description:"친구 다이어리로 바로 이동하는 링크 목록",type:"friends",accessMode:"public",hidden:false,order:4}
       ]
     };
     const DEMO_ENTRIES = { sample:[] };
 
-    const state = { app:null,auth:null,db:null,storage:null,user:null,profile:null,ownerId:"demo-owner",slug:"demo",home:null,books:[],book:null,menus:[],menu:null,entries:[],photos:[],isOwner:false,isFriend:false,preview:false,unsubs:[],selectedEntryId:null,entryFiles:[],entryMediaItems:[],dragMediaId:null,photoFile:null,tempAssets:{},tempHomeAsset:null,friendRequests:[],friends:[],friendProfiles:{},childUnsubs:[],friendUnsubs:[],migratingDefaultMenus:false,imageEditor:null };
+    const state = { app:null,auth:null,db:null,storage:null,user:null,profile:null,ownerId:"demo-owner",slug:"demo",home:null,books:[],book:null,menus:[],menu:null,entries:[],photos:[],isOwner:false,isFriend:false,preview:false,unsubs:[],selectedEntryId:null,entryFiles:[],entryMediaItems:[],dragMediaId:null,photoFile:null,tempAssets:{},tempHomeAsset:null,friendRequests:[],friends:[],friendProfiles:{},childUnsubs:[],friendUnsubs:[],migratingDefaultMenus:false,imageEditor:null,entrySideMedia:{left:null,right:null},access:{home:false,books:new Set(),menus:new Set(),pending:null},guestbookEditingId:null,visitorEntryUnsub:null,visitorPhotoUnsub:null };
     const $ = id => document.getElementById(id);
     const escapeHtml = value => String(value ?? "").replace(/[&<>'"]/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
     const safeUrl = value => { try { const url = new URL(value,location.href); return ["http:","https:","blob:","data:"].includes(url.protocol) ? url.href : ""; } catch { return ""; } };
+
+    const accessStorageKey=(kind,target='')=>`diary-unlock:${state.ownerId}:${kind}:${target||'home'}`;
+    async function sha256(value=''){
+      const bytes=new TextEncoder().encode(String(value));
+      const digest=await crypto.subtle.digest('SHA-256',bytes);
+      return [...new Uint8Array(digest)].map(v=>v.toString(16).padStart(2,'0')).join('');
+    }
+    function accessRemembered(kind,target=''){
+      if(state.isOwner)return true;
+      try{return sessionStorage.getItem(accessStorageKey(kind,target))==='1';}catch{return false;}
+    }
+    function rememberAccess(kind,target=''){
+      try{sessionStorage.setItem(accessStorageKey(kind,target),'1');}catch{}
+      if(kind==='home')state.access.home=true;
+      if(kind==='book')state.access.books.add(target);
+      if(kind==='menu')state.access.menus.add(target);
+    }
+    function homeNeedsPassword(){return !state.isOwner&&state.home?.lockEnabled===true&&!accessRemembered('home');}
+    function bookNeedsPassword(book=state.book){return !!book&&!state.isOwner&&book.lockEnabled===true&&!accessRemembered('book',book.id);}
+    function menuNeedsPassword(menu=state.menu){return !!menu&&!state.isOwner&&menu.accessMode==='password'&&!accessRemembered('menu',menu.id);}
+    function menuDisplayName(menu={}){return menu.type==='gallery'&&menu.name==='사진첩'?'방명록':(menu.name||'메뉴');}
+    function openAccessGate(kind,target=''){
+      state.access.pending={kind,target};
+      $('accessKindInput').value=kind;$('accessTargetInput').value=target;$('accessPasswordInput').value='';$('accessError').textContent='';
+      const item=kind==='home'?state.home:kind==='book'?getBook(target):state.menus.find(menu=>menu.id===target);
+      $('accessTitle').textContent=kind==='home'?'잠긴 다이어리 홈페이지':kind==='book'?`${item?.title||'다이어리'} 잠금`:`${menuDisplayName(item||{})} 잠금`;
+      $('accessDescription').textContent=kind==='home'?'이 홈페이지는 비밀번호를 입력해야 볼 수 있어요.':kind==='book'?'이 다이어리만 따로 잠겨 있어요.':"이 메뉴는 비밀번호를 입력해야 펼칠 수 있어요.";
+      openModal('accessModal');setTimeout(()=>$('accessPasswordInput').focus(),30);
+    }
+    async function verifyAccess(event){
+      event.preventDefault();const kind=$('accessKindInput').value,target=$('accessTargetInput').value,password=$('accessPasswordInput').value;
+      const item=kind==='home'?state.home:kind==='book'?getBook(target):state.menus.find(menu=>menu.id===target);
+      const expected=kind==='menu'?item?.passwordHash:item?.lockHash;
+      if(!expected){rememberAccess(kind,target);closeModal('accessModal');continueAfterUnlock(kind,target);return;}
+      const actual=await sha256(password);
+      if(actual!==expected){$('accessError').textContent='비밀번호가 맞지 않아요.';return;}
+      rememberAccess(kind,target);closeModal('accessModal');continueAfterUnlock(kind,target);
+    }
+    function continueAfterUnlock(kind,target){
+      if(kind==='home'){subscribeBooks(currentPath()[1]==='book'?currentPath()[2]:'');return;}
+      if(kind==='book'){state.book=getBook(target)||state.book;state.menu={id:'cover',name:state.book?.coverMenuName||'표지',type:'cover'};state.selectedEntryId=null;subscribeBookCollections();closeLibrary();return;}
+      if(kind==='menu'){const menu=state.menus.find(item=>item.id===target);if(menu){state.menu=menu;state.selectedEntryId=null;subscribeVisibleMenuData();renderMenus();renderSpread();renderAdmin();updateRoute();}}
+    }
+    function sidePhotoUrl(entry={},side='left'){
+      const direct=side==='left'?entry.leftImageUrl:entry.rightImageUrl;
+      if(direct)return safeUrl(direct);
+      const legacy=(entry.imageUrls||[])[side==='left'?0:1];
+      return safeUrl(legacy||'');
+    }
+    function sidePhotoHtml(url,label=''){
+      const clean=safeUrl(url);return clean?`<div class="page-side-photo"><img src="${escapeHtml(clean)}" data-lightbox-src="${escapeHtml(clean)}" alt="${escapeHtml(label)}" /></div>`:'';
+    }
     const RICH_ALLOWED_TAGS=new Set(['DIV','P','BR','SPAN','STRONG','B','EM','I','U','S','UL','OL','LI','FONT']);
     function richToPlain(value=''){
       const box=document.createElement('div');box.innerHTML=String(value??'');return (box.textContent||'').replace(/\u00a0/g,' ').trim();
@@ -448,7 +549,7 @@
     const notify = (message,type="") => { const el=document.createElement("div");el.className=`toast ${type}`;el.textContent=message;$('toastWrap').append(el);setTimeout(()=>el.remove(),3300); };
     const closeModal = id => { $(id).hidden=true; };
     const openModal = id => { $(id).hidden=false; };
-    const clearUnsubs = () => { [...state.unsubs,...state.childUnsubs,...state.friendUnsubs].forEach(fn=>{try{fn();}catch{}});state.unsubs=[];state.childUnsubs=[];state.friendUnsubs=[]; };
+    const clearUnsubs = () => { [...state.unsubs,...state.childUnsubs,...state.friendUnsubs,state.visitorEntryUnsub,state.visitorPhotoUnsub].filter(Boolean).forEach(fn=>{try{fn();}catch{}});state.unsubs=[];state.childUnsubs=[];state.friendUnsubs=[];state.visitorEntryUnsub=null;state.visitorPhotoUnsub=null; };
     const currentPath = () => location.hash.replace(/^#\/?/,"").split("/").filter(Boolean);
     const buildHomeLink = (slug=state.slug,bookId="") => `${location.origin}${location.pathname}#/${slug}${bookId?`/book/${bookId}`:""}`;
     function updateBrowserMeta(){
@@ -492,7 +593,7 @@
         pages:'자유 페이지',
         persona:'페르소나',
         board:'기록',
-        gallery:'사진첩',
+        gallery:'방명록',
         friends:'친구'
       })[type] || '메뉴';
     }
@@ -504,6 +605,7 @@
       applyTheme(state.book);updateBodyFlags();updateBrowserMeta();
       $('brandTitle').textContent=richPlain(state.home?.title||state.profile?.displayName||"My Story Diary");
       $('brandSub').textContent=`#/${state.slug}`;
+      $('myDiaryBtn').hidden=!state.user||state.user.uid===state.ownerId||!state.profile?.slug;
       $('currentBookTitle').textContent=richPlain(state.book.title||"Untitled Diary");
       $('drawerBookTitle').textContent=richPlain(state.book.title||"다이어리 꾸미기");
       $('libraryTitle').textContent=state.home?.title||`${state.profile?.displayName||'나'}의 다이어리`;
@@ -511,14 +613,30 @@
     }
 
     function renderMenus(){
-      const ownerEditing=state.isOwner&&!state.preview;const menus=sorted(state.menus).filter(menu=>ownerEditing||menu.hidden!==true);const tabs=[];
-      if(ownerEditing||state.book?.coverHidden!==true)tabs.push({id:"cover",name:state.book?.coverMenuName||"표지",type:"cover",hidden:state.book?.coverHidden===true});
+      const ownerEditing=state.isOwner&&!state.preview;
+      const menus=sorted(state.menus).filter(menu=>{
+        if(ownerEditing)return true;
+        if(menu.hidden===true)return false;
+        if(menu.accessMode==='owner')return false;
+        return true;
+      });
+      const tabs=[];
+      if(ownerEditing||state.book?.coverHidden!==true)tabs.push({id:"cover",name:state.book?.coverMenuName||"표지",type:"cover",hidden:state.book?.coverHidden===true,accessMode:"public"});
       tabs.push(...menus);
       if(!state.menu||!tabs.some(item=>item.id===state.menu.id)){state.menu=tabs[0]||{id:"hidden",name:"숨겨진 다이어리",type:"hidden"};state.selectedEntryId=null;}
-      $('menuTabs').innerHTML=tabs.map(menu=>`<button class="menu-tab ${state.menu.id===menu.id?'active':''} ${menu.hidden===true?'menu-hidden':''}" data-menu-id="${escapeHtml(menu.id)}" type="button" title="${menu.hidden===true?'방문자에게 숨겨진 메뉴':''}">${escapeHtml(menu.name)}</button>`).join("");
+      $('menuTabs').innerHTML=tabs.map(menu=>{
+        const locked=!ownerEditing&&menu.accessMode==='password'&&!accessRemembered('menu',menu.id);
+        return `<button class="menu-tab ${state.menu.id===menu.id?'active':''} ${menu.hidden===true?'menu-hidden':''}" data-menu-id="${escapeHtml(menu.id)}" type="button" title="${menu.hidden===true?'방문자에게 숨겨진 메뉴':''}">${escapeHtml(menuDisplayName(menu))}${locked?'<span class="lock-badge">LOCK</span>':''}</button>`;
+      }).join("");
       $('quickAddBtn').hidden=!state.menu||["cover","gallery","friends","hidden"].includes(state.menu.type);
       $('quickAddBtn').textContent=state.menu?.type==="persona"?"페르소나 추가":state.menu?.type==="board"?"새 기록 쓰기":"새 페이지 추가";
-      $('menuTabs').querySelectorAll('[data-menu-id]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.menuId;state.menu=id==='cover'?{id:'cover',name:state.book?.coverMenuName||'표지',type:'cover',hidden:state.book?.coverHidden===true}:state.menus.find(item=>item.id===id);state.selectedEntryId=null;renderMenus();renderSpread();renderAdmin();updateRoute();}));
+      $('menuTabs').querySelectorAll('[data-menu-id]').forEach(btn=>btn.addEventListener('click',()=>{
+        const id=btn.dataset.menuId;
+        const next=id==='cover'?{id:'cover',name:state.book?.coverMenuName||'표지',type:'cover',hidden:state.book?.coverHidden===true,accessMode:'public'}:state.menus.find(item=>item.id===id);
+        if(!next)return;
+        if(menuNeedsPassword(next)){openAccessGate('menu',next.id);return;}
+        state.menu=next;state.selectedEntryId=null;subscribeVisibleMenuData();renderMenus();renderSpread();renderAdmin();updateRoute();
+      }));
     }
 
     function renderSpread(){
@@ -581,28 +699,29 @@
     function renderPages(){
       const entries=entriesForMenu();if(!state.selectedEntryId&&entries.length)state.selectedEntryId=entries[0].id;const selected=entries.find(item=>item.id===state.selectedEntryId)||entries[0];
       if(!selected){$('spread').innerHTML=`<article class="page left">${pageHeading(state.menu.name,state.menu.description)}${emptyState('아직 소개 속지가 없어요','마주 보는 페어틀, 자유 기록, 서사 정리 중 하나를 골라 추가해 주세요.')}</article><article class="page right">${pageHeading('빈 다이어리','관리자 로그인 후 새 속지를 만들 수 있어요.')}<div class="page-scroll-hint">내용이 길어지면 페이지 안을 끌어 위아래로 볼 수 있어요.</div></article>`;return;}
-      const template=selected.pageTemplate||'free',fit=selected.imageFit||'contain',fitCss=fitClass(fit),imgs=(selected.imageUrls||[]).map(safeUrl).filter(Boolean),nav=sheetNavigator(entries,selected),title=`<div class="spread-label">${escapeHtml(state.menu.name)} · ${escapeHtml(pageTemplateLabel(template))}</div><h2 class="spread-title rich-content">${richHtml(selected.title||'')}</h2>${selected.subtitle?`<div class="spread-subtitle rich-content">${richHtml(selected.subtitle)}</div>`:''}`;
+      const template=selected.pageTemplate||'free',fit=selected.imageFit||'contain',fitCss=fitClass(fit),imgs=(selected.imageUrls||[]).map(safeUrl).filter(Boolean),leftSide=sidePhotoUrl(selected,'left'),rightSide=sidePhotoUrl(selected,'right'),additional=(selected.leftImageUrl||selected.rightImageUrl)?imgs:imgs.slice(2),nav=sheetNavigator(entries,selected),title=`<div class="spread-label">${escapeHtml(state.menu.name)} · ${escapeHtml(pageTemplateLabel(template))}</div><h2 class="spread-title rich-content">${richHtml(selected.title||'')}</h2>${selected.subtitle?`<div class="spread-subtitle rich-content">${richHtml(selected.subtitle)}</div>`:''}`;
       $('spread').classList.add('has-sheet-toolbar');
       let left='',right='';
       if(template==='pair-split'){
         $('spread').classList.add('pair-sync');
         const leftNote=selected.personANote||(selected.body||''),rightNote=selected.personBNote||'';
-        const extra=imgs.slice(2),leftExtra=extra.filter((_,index)=>index%2===0),rightExtra=extra.filter((_,index)=>index%2===1);
-        left=`<article class="page left pair-sync-page">${selected.personAName?`<div class="pair-page-label"><strong>${richHtml(selected.personAName)}</strong></div>`:''}<div class="pair-person"><div class="pair-person-photo">${imgs[0]?`<img class="${fitCss}" src="${escapeHtml(imgs[0])}" data-lightbox-src="${escapeHtml(imgs[0])}" alt="" />`:'사진'}</div><div class="rich-content">${richHtml(selected.personAInfo||'')}</div></div>${leftNote?`<div class="pair-story-note rich-content">${richHtml(leftNote)}</div>`:''}${imagesHtml(leftExtra,'media-grid',fit)}<div class="page-scroll-hint">양쪽 페이지가 함께 움직여요.</div></article>`;
-        right=`<article class="page right pair-sync-page">${selected.personBName?`<div class="pair-page-label"><strong>${richHtml(selected.personBName)}</strong></div>`:''}<div class="pair-person"><div class="pair-person-photo">${imgs[1]?`<img class="${fitCss}" src="${escapeHtml(imgs[1])}" data-lightbox-src="${escapeHtml(imgs[1])}" alt="" />`:'사진'}</div><div class="rich-content">${richHtml(selected.personBInfo||'')}</div></div>${rightNote?`<div class="pair-story-note rich-content">${richHtml(rightNote)}</div>`:''}${imagesHtml(rightExtra,'media-grid',fit)}<div class="page-scroll-hint">양쪽 페이지가 같은 비율로 내려가요.</div></article>`;
+        const extra=additional,leftExtra=extra.filter((_,index)=>index%2===0),rightExtra=extra.filter((_,index)=>index%2===1);
+        left=`<article class="page left pair-sync-page">${selected.personAName?`<div class="pair-page-label"><strong>${richHtml(selected.personAName)}</strong></div>`:''}<div class="pair-person"><div class="pair-person-photo">${leftSide?`<img class="${fitCss}" src="${escapeHtml(leftSide)}" data-lightbox-src="${escapeHtml(leftSide)}" alt="" />`:'사진'}</div><div class="rich-content">${richHtml(selected.personAInfo||'')}</div></div>${leftNote?`<div class="pair-story-note rich-content">${richHtml(leftNote)}</div>`:''}${imagesHtml(leftExtra,'media-grid',fit)}<div class="page-scroll-hint">양쪽 페이지가 함께 움직여요.</div></article>`;
+        right=`<article class="page right pair-sync-page">${selected.personBName?`<div class="pair-page-label"><strong>${richHtml(selected.personBName)}</strong></div>`:''}<div class="pair-person"><div class="pair-person-photo">${rightSide?`<img class="${fitCss}" src="${escapeHtml(rightSide)}" data-lightbox-src="${escapeHtml(rightSide)}" alt="" />`:'사진'}</div><div class="rich-content">${richHtml(selected.personBInfo||'')}</div></div>${rightNote?`<div class="pair-story-note rich-content">${richHtml(rightNote)}</div>`:''}${imagesHtml(rightExtra,'media-grid',fit)}<div class="page-scroll-hint">양쪽 페이지가 같은 비율로 내려가요.</div></article>`;
       }else if(template==='pair-cards'){
-        left=`<article class="page left">${title}<div class="pair-card-grid"><div class="pair-mini">${imgs[0]?`<img class="${fitCss}" src="${escapeHtml(imgs[0])}" data-lightbox-src="${escapeHtml(imgs[0])}" data-lightbox-fit="${escapeHtml(fit)}" alt="" />`:'<div class="pair-person-photo" style="height:205px">사진</div>'}${selected.personAName?`<strong>${richHtml(selected.personAName)}</strong>`:''}<div class="rich-content">${richHtml(selected.personAInfo||'')}</div></div><div class="pair-mini">${imgs[1]?`<img class="${fitCss}" src="${escapeHtml(imgs[1])}" data-lightbox-src="${escapeHtml(imgs[1])}" data-lightbox-fit="${escapeHtml(fit)}" alt="" />`:'<div class="pair-person-photo" style="height:205px">사진</div>'}${selected.personBName?`<strong>${richHtml(selected.personBName)}</strong>`:''}<div class="rich-content">${richHtml(selected.personBInfo||'')}</div></div></div></article>`;
-        right=`<article class="page right"><div class="spread-label">PAIR NOTE</div><h2 class="spread-title rich-content">${richHtml(selected.title||'Our Pair')}</h2><div class="paper-note"><div class="diary-copy rich-content">${richHtml(selected.body||'')}</div></div>${imagesHtml(imgs.slice(2),'media-grid',fit)}<div class="page-scroll-hint">사진과 글이 많으면 페이지 안을 끌어 보세요.</div></article>`;
+        const leftExtra=additional.filter((_,index)=>index%2===0),rightExtra=additional.filter((_,index)=>index%2===1);
+        left=`<article class="page left">${title}<div class="pair-mini">${leftSide?`<img class="${fitCss}" src="${escapeHtml(leftSide)}" data-lightbox-src="${escapeHtml(leftSide)}" alt="" />`:'<div class="pair-person-photo" style="height:205px">사진</div>'}${selected.personAName?`<strong>${richHtml(selected.personAName)}</strong>`:''}<div class="rich-content">${richHtml(selected.personAInfo||'')}</div>${selected.personANote?`<div class="pair-story-note rich-content">${richHtml(selected.personANote)}</div>`:''}</div>${imagesHtml(leftExtra,'media-grid',fit)}<div class="page-scroll-hint">왼쪽 페이지 사진과 내용을 따로 기록해요.</div></article>`;
+        right=`<article class="page right"><div class="spread-label">PAIR NOTE</div>${selected.personBName?`<h2 class="spread-title rich-content">${richHtml(selected.personBName)}</h2>`:''}<div class="pair-mini">${rightSide?`<img class="${fitCss}" src="${escapeHtml(rightSide)}" data-lightbox-src="${escapeHtml(rightSide)}" alt="" />`:'<div class="pair-person-photo" style="height:205px">사진</div>'}<div class="rich-content">${richHtml(selected.personBInfo||'')}</div>${selected.personBNote?`<div class="pair-story-note rich-content">${richHtml(selected.personBNote)}</div>`:''}</div>${selected.body?`<div class="paper-note"><div class="diary-copy rich-content">${richHtml(selected.body)}</div></div>`:''}${imagesHtml(rightExtra,'media-grid',fit)}<div class="page-scroll-hint">오른쪽 페이지 사진과 내용을 따로 기록해요.</div></article>`;
       }else if(template==='story'){
-        const timeline=splitTimeline(selected.storyTimeline||'');left=`<article class="page left">${title}${imgs[0]?`<div class="persona-hero"><img class="${fitCss}" src="${escapeHtml(imgs[0])}" data-lightbox-src="${escapeHtml(imgs[0])}" data-lightbox-fit="${escapeHtml(fit)}" alt="" /></div>`:''}<div class="diary-copy rich-content">${richHtml(selected.body||'')}</div><div class="page-scroll-hint">페이지를 끌어서 더 보기</div></article>`;
-        right=`<article class="page right"><div class="spread-label">STORY TIMELINE</div><h2 class="spread-title">서사 정리</h2><div class="timeline">${timeline.length?timeline.map(item=>`<div class="timeline-item"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.body)}</p></div>`).join(''):'<div class="timeline-item"><strong>아직 타임라인이 없어요.</strong><p>속지를 수정해 사건 흐름을 적어 주세요.</p></div>'}</div>${imagesHtml(imgs.slice(1),'media-grid',fit)}<div class="page-scroll-hint">내용이 길어져도 다이어리 크기는 그대로 유지돼요.</div></article>`;
+        const timeline=splitTimeline(selected.storyTimeline||'');left=`<article class="page left">${title}${sidePhotoHtml(leftSide,'왼쪽 페이지 사진')}<div class="diary-copy rich-content">${richHtml(selected.body||'')}</div><div class="page-scroll-hint">페이지를 끌어서 더 보기</div></article>`;
+        right=`<article class="page right"><div class="spread-label">STORY TIMELINE</div><h2 class="spread-title">서사 정리</h2><div class="timeline">${timeline.length?timeline.map(item=>`<div class="timeline-item"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.body)}</p></div>`).join(''):'<div class="timeline-item"><strong>아직 타임라인이 없어요.</strong><p>속지를 수정해 사건 흐름을 적어 주세요.</p></div>'}</div>${sidePhotoHtml(rightSide,'오른쪽 페이지 사진')}${imagesHtml(additional,'media-grid',fit)}<div class="page-scroll-hint">내용이 길어져도 다이어리 크기는 그대로 유지돼요.</div></article>`;
       }else{
-        const allImages=imagesHtml(imgs,'media-grid',fit);if(selected.layout==='image-left'){
-          left=`<article class="page left">${allImages}<div class="page-scroll-hint">페이지를 끌어서 더 보기</div></article>`;right=`<article class="page right">${title}<div class="diary-copy rich-content">${richHtml(selected.body||'')}</div><div class="page-scroll-hint">내용이 길어져도 다이어리 안에서만 움직여요.</div></article>`;
+        const allImages=imagesHtml(additional,'media-grid',fit);if(selected.layout==='image-left'){
+          left=`<article class="page left">${sidePhotoHtml(leftSide,'왼쪽 페이지 사진')}${allImages}<div class="page-scroll-hint">페이지를 끌어서 더 보기</div></article>`;right=`<article class="page right">${sidePhotoHtml(rightSide,'오른쪽 페이지 사진')}${title}<div class="diary-copy rich-content">${richHtml(selected.body||'')}</div><div class="page-scroll-hint">내용이 길어져도 다이어리 안에서만 움직여요.</div></article>`;
         }else if(selected.layout==='scrap'){
-          const midpoint=Math.ceil(imgs.length/2);left=`<article class="page left">${title}${imagesHtml(imgs.slice(0,midpoint),'media-grid',fit)}<div class="diary-copy rich-content">${richHtml(selected.body||'')}</div></article>`;right=`<article class="page right"><div class="spread-label">SCRAP PAGE</div>${imagesHtml(imgs.slice(midpoint),'media-grid',fit)}<div class="page-scroll-hint">사진이 많으면 페이지를 끌어서 보세요.</div></article>`;
+          const midpoint=Math.ceil(additional.length/2);left=`<article class="page left">${sidePhotoHtml(leftSide,'왼쪽 페이지 사진')}${title}${imagesHtml(additional.slice(0,midpoint),'media-grid',fit)}<div class="diary-copy rich-content">${richHtml(selected.body||'')}</div></article>`;right=`<article class="page right">${sidePhotoHtml(rightSide,'오른쪽 페이지 사진')}<div class="spread-label">SCRAP PAGE</div>${imagesHtml(additional.slice(midpoint),'media-grid',fit)}<div class="page-scroll-hint">사진이 많으면 페이지를 끌어서 보세요.</div></article>`;
         }else{
-          left=`<article class="page left">${title}<div class="diary-copy rich-content">${richHtml(selected.body||'')}</div><div class="page-scroll-hint">페이지를 끌어서 더 보기</div></article>`;right=`<article class="page right"><div class="spread-label">PHOTO PAGE</div>${allImages||emptyState('사진이 없는 속지','수정에서 사진을 추가할 수 있어요.')}<div class="page-scroll-hint">사진이 많으면 페이지를 끌어서 보세요.</div></article>`;
+          left=`<article class="page left">${sidePhotoHtml(leftSide,'왼쪽 페이지 사진')}${title}<div class="diary-copy rich-content">${richHtml(selected.body||'')}</div><div class="page-scroll-hint">페이지를 끌어서 더 보기</div></article>`;right=`<article class="page right">${sidePhotoHtml(rightSide,'오른쪽 페이지 사진')}<div class="spread-label">PHOTO PAGE</div>${allImages||emptyState('사진이 없는 속지','수정에서 사진을 추가할 수 있어요.')}<div class="page-scroll-hint">사진이 많으면 페이지를 끌어서 보세요.</div></article>`;
         }
       }
       $('spread').innerHTML=nav+left+right;bindSheetNavigator(entries,selected);
@@ -614,7 +733,7 @@
 
     function personaInformation(item={}){return String(item.information||[item.name,item.tagline,item.appearance].filter(Boolean).join('\n')).trim();}
     function personaTitle(item={}){const first=richToPlain(personaInformation(item)).split(/\n/).map(v=>v.trim()).find(Boolean)||richPlain(item.name,'');return first.slice(0,80);}
-    function renderEntryLinks(entries,selected){return entries.length?entries.map(item=>{const isPersona=state.menu.type==='persona',title=isPersona?personaTitle(item):richPlain(item.title||item.name,'—'),summary=isPersona?richPlain(personaInformation(item)||item.prompt||item.memo||''):richPlain(item.subtitle||item.tagline||item.body||item.memo||'');return `<button class="entry-link ${selected?.id===item.id?'active':''}" data-entry-id="${escapeHtml(item.id)}" type="button"><span class="entry-thumb">${item.imageUrls?.[0]?`<img src="${escapeHtml(safeUrl(item.imageUrls[0]))}" alt="" />`:'✦'}</span><span><span class="entry-label">${escapeHtml(state.menu.name)}</span><strong>${escapeHtml(title)}</strong><span>${escapeHtml(summary)}</span></span></button>`;}).join(''):emptyState('비어 있는 메뉴','새 페이지를 추가해보세요.');}
+    function renderEntryLinks(entries,selected){return entries.length?entries.map(item=>{const isPersona=state.menu.type==='persona',title=isPersona?personaTitle(item):richPlain(item.title||item.name,'—'),summary=isPersona?richPlain(personaInformation(item)||item.prompt||item.memo||''):richPlain(item.subtitle||item.tagline||item.body||item.memo||''),thumb=sidePhotoUrl(item,'left')||safeUrl(item.imageUrls?.[0]||'');return `<button class="entry-link ${selected?.id===item.id?'active':''}" data-entry-id="${escapeHtml(item.id)}" type="button"><span class="entry-thumb">${thumb?`<img src="${escapeHtml(thumb)}" alt="" />`:'✦'}</span><span><span class="entry-label">${escapeHtml(state.menu.name)}</span><strong>${escapeHtml(title)}</strong><span>${escapeHtml(summary)}</span></span></button>`;}).join(''):emptyState('비어 있는 메뉴','새 페이지를 추가해보세요.');}
     function bindEntryList(entries){ $('spread').querySelectorAll('[data-entry-id]').forEach(btn=>btn.addEventListener('click',()=>{state.selectedEntryId=btn.dataset.entryId;renderSpread();renderAdmin();})); }
     function bindSearch(entries){ const input=$('entrySearch');if(!input)return;input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();const filtered=entries.filter(item=>JSON.stringify(item).toLowerCase().includes(q));$('entryList').innerHTML=renderEntryLinks(filtered,entries.find(item=>item.id===state.selectedEntryId));bindEntryList(filtered);}); }
 
@@ -623,29 +742,62 @@
 
     function renderPersonas(){
       const entries=entriesForMenu();if(!state.selectedEntryId&&entries.length)state.selectedEntryId=entries[0].id;const selected=entries.find(item=>item.id===state.selectedEntryId)||entries[0];
-      const left=`<article class="page left">${pageHeading(state.menu.name,state.menu.description)}<div class="index-tools"><input class="search-input" id="entrySearch" placeholder="Information · Prompt · Memo 검색" /></div><div class="entry-list" id="entryList">${renderEntryLinks(entries,selected)}</div></article>`;
-      let right;if(!selected){right=`<article class="page right">${pageHeading('페르소나 보관함','페르소나 자료를 정리해 주세요.')} ${emptyState('등록된 페르소나가 없어요','새 페르소나를 추가해 주세요.')}</article>`;}else right=`<article class="page right persona-detail">${entryManageBar(selected)}<span class="eyebrow">${escapeHtml(state.menu.name)}</span><h2>${escapeHtml(personaTitle(selected))}</h2><div class="persona-hero">${selected.imageUrls?.[0]?`<img class="${fitClass(selected.imageFit||'contain')}" src="${escapeHtml(safeUrl(selected.imageUrls[0]))}" data-lightbox-src="${escapeHtml(safeUrl(selected.imageUrls[0]))}" alt="" />`:'PERSONA'}</div><div class="memo-section"><h3>INFORMATION</h3><div class="rich-content">${richHtml(personaInformation(selected))}</div></div><div class="memo-section"><h3>PROMPT</h3><pre class="prompt-box">${escapeHtml(selected.prompt||'')}</pre></div><div class="memo-section"><h3>MEMO</h3><div class="rich-content">${richHtml(selected.memo||'')}</div></div></article>`;
+      const leftPhoto=selected?sidePhotoUrl(selected,'left'):'';
+      const rightPhoto=selected?sidePhotoUrl(selected,'right'):'';
+      const left=`<article class="page left">${pageHeading(menuDisplayName(state.menu),state.menu.description)}${sidePhotoHtml(leftPhoto,'왼쪽 페이지 사진')}<div class="index-tools"><input class="search-input" id="entrySearch" placeholder="Information · Prompt · Memo 검색" /></div><div class="entry-list" id="entryList">${renderEntryLinks(entries,selected)}</div></article>`;
+      let right;
+      if(!selected){
+        right=`<article class="page right">${pageHeading('페르소나 보관함','페르소나 자료를 정리해 주세요.')} ${emptyState('등록된 페르소나가 없어요','새 페르소나를 추가해 주세요.')}</article>`;
+      }else{
+        const extra=(selected.leftImageUrl||selected.rightImageUrl)?(selected.imageUrls||[]):(selected.imageUrls||[]).slice(2);
+        right=`<article class="page right persona-detail">${entryManageBar(selected)}${sidePhotoHtml(rightPhoto,'오른쪽 페이지 사진')}<span class="eyebrow">${escapeHtml(menuDisplayName(state.menu))}</span><h2>${escapeHtml(personaTitle(selected))}</h2><div class="memo-section"><h3>INFORMATION</h3><div class="rich-content">${richHtml(personaInformation(selected))}</div></div><div class="memo-section"><h3>PROMPT</h3><pre class="prompt-box">${escapeHtml(selected.prompt||'')}</pre></div><div class="memo-section"><h3>MEMO</h3><div class="rich-content">${richHtml(selected.memo||'')}</div></div>${imagesHtml(extra,'media-grid',selected.imageFit||'contain')}</article>`;
+      }
       $('spread').innerHTML=left+right;bindEntryList(entries);bindSearch(entries);bindEntryManageBar(selected);
     }
 
     function renderBoard(){
-      const entries=[...entriesForMenu()].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||(b.createdAt?.seconds??0)-(a.createdAt?.seconds??0));if(!state.selectedEntryId&&entries.length)state.selectedEntryId=entries[0].id;const selected=entries.find(item=>item.id===state.selectedEntryId)||entries[0];
+      const entries=[...entriesForMenu()].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||(b.createdAt?.seconds??0)-(a.createdAt?.seconds??0));
+      if(!state.selectedEntryId&&entries.length)state.selectedEntryId=entries[0].id;
+      const selected=entries.find(item=>item.id===state.selectedEntryId)||entries[0];
       const layout=state.menu.boardLayout==='list'?'list':'cards';
-      const makeCards=list=>list.map(item=>`<button class="post-card ${selected?.id===item.id?'active':''}" data-entry-id="${escapeHtml(item.id)}" type="button"><div class="post-image">${item.imageUrls?.[0]?`<img class="${fitClass(item.imageFit||'contain')}" src="${escapeHtml(safeUrl(item.imageUrls[0]))}" alt="" />`:'✎'}</div><div class="post-meta">${escapeHtml(item.date||formatDate(item.createdAt))}</div><strong class="post-title">${item.number?`<span class="post-number">${escapeHtml(item.number)}.</span>`:''}${escapeHtml(richPlain(item.title,'—'))}</strong></button>`).join('');
+      const makeCards=list=>list.map(item=>{const thumb=sidePhotoUrl(item,'left')||safeUrl(item.imageUrls?.[0]||'');return `<button class="post-card ${selected?.id===item.id?'active':''}" data-entry-id="${escapeHtml(item.id)}" type="button"><div class="post-image">${thumb?`<img class="${fitClass(item.imageFit||'contain')}" src="${escapeHtml(thumb)}" alt="" />`:'✎'}</div><div class="post-meta">${escapeHtml(item.date||formatDate(item.createdAt))}</div><strong class="post-title">${item.number?`<span class="post-number">${escapeHtml(item.number)}.</span>`:''}${escapeHtml(richPlain(item.title,'—'))}</strong></button>`;}).join('');
       const makeList=list=>list.map(item=>`<button class="board-list-row ${selected?.id===item.id?'active':''}" data-entry-id="${escapeHtml(item.id)}" type="button"><time>${escapeHtml(item.date||formatDate(item.createdAt))}</time><strong>${item.number?`<span class="post-number">${escapeHtml(item.number)}.</span>`:''}${escapeHtml(richPlain(item.title,'—'))}</strong><span class="board-tags">${escapeHtml(item.tags||'')}</span></button>`).join('');
       const listing=entries.length?(layout==='list'?makeList(entries):makeCards(entries)):emptyState('아직 기록이 없어요','글과 사진을 다이어리에 남길 수 있어요.');
-      const left=`<article class="page left">${pageHeading(state.menu.name,state.menu.description)}<div class="index-tools"><input class="search-input" id="entrySearch" placeholder="제목·본문·날짜·태그 검색" /></div><div class="${layout==='list'?'board-list':'board-grid'}" id="entryList">${listing}</div></article>`;
-      let right;if(!selected)right=`<article class="page right">${pageHeading('새 기록을 기다리는 중','관리자 로그인 후 첫 기록을 작성해보세요.')} ${emptyState('빈 기록장','기록 번호는 필요할 때만 넣을 수 있어요.')}</article>`;else right=`<article class="page right">${entryManageBar(selected)}<span class="eyebrow">${escapeHtml(state.menu.name)}</span><h2 class="post-detail-title rich-content">${selected.number?`<span class="post-number">${escapeHtml(selected.number)}.</span>`:''}${richHtml(selected.title||'')}</h2><div class="post-detail-meta">${escapeHtml(selected.date||formatDate(selected.createdAt))}${selected.tags?` · ${escapeHtml(selected.tags)}`:''}</div>${imagesHtml(selected.imageUrls||[],'detail-gallery',selected.imageFit||'contain')}<div class="post-detail-body rich-content">${richHtml(selected.body||'')}</div></article>`;
-      $('spread').innerHTML=left+right;bindEntryList(entries);bindEntryManageBar(selected);const input=$('entrySearch');if(input)input.addEventListener('input',()=>{const q=input.value.toLowerCase();const visible=entries.filter(item=>[item.title,item.body,item.date,item.tags,item.number].map(richToPlain).join(' ').toLowerCase().includes(q));$('entryList').innerHTML=visible.length?(layout==='list'?makeList(visible):makeCards(visible)):emptyState('검색 결과 없음','다른 단어로 찾아보세요.');bindEntryList(visible);});
+      const leftPhoto=selected?sidePhotoUrl(selected,'left'):'';
+      const rightPhoto=selected?sidePhotoUrl(selected,'right'):'';
+      const left=`<article class="page left">${pageHeading(menuDisplayName(state.menu),state.menu.description)}${sidePhotoHtml(leftPhoto,'왼쪽 페이지 사진')}<div class="index-tools"><input class="search-input" id="entrySearch" placeholder="제목·본문·날짜·태그 검색" /></div><div class="${layout==='list'?'board-list':'board-grid'}" id="entryList">${listing}</div></article>`;
+      let right;
+      if(!selected)right=`<article class="page right">${pageHeading('새 기록을 기다리는 중','관리자 로그인 후 첫 기록을 작성해보세요.')} ${emptyState('빈 기록장','기록 번호는 필요할 때만 넣을 수 있어요.')}</article>`;
+      else{
+        const extra=(selected.leftImageUrl||selected.rightImageUrl)?(selected.imageUrls||[]):(selected.imageUrls||[]).slice(2);
+        right=`<article class="page right">${entryManageBar(selected)}${sidePhotoHtml(rightPhoto,'오른쪽 페이지 사진')}<span class="eyebrow">${escapeHtml(menuDisplayName(state.menu))}</span><h2 class="post-detail-title rich-content">${selected.number?`<span class="post-number">${escapeHtml(selected.number)}.</span>`:''}${richHtml(selected.title||'')}</h2><div class="post-detail-meta">${escapeHtml(selected.date||formatDate(selected.createdAt))}${selected.tags?` · ${escapeHtml(selected.tags)}`:''}</div>${imagesHtml(extra,'detail-gallery',selected.imageFit||'contain')}<div class="post-detail-body rich-content">${richHtml(selected.body||'')}</div></article>`;
+      }
+      $('spread').innerHTML=left+right;bindEntryList(entries);bindEntryManageBar(selected);
+      const input=$('entrySearch');if(input)input.addEventListener('input',()=>{const q=input.value.toLowerCase();const visible=entries.filter(item=>[item.title,item.body,item.date,item.tags,item.number].map(richToPlain).join(' ').toLowerCase().includes(q));$('entryList').innerHTML=visible.length?(layout==='list'?makeList(visible):makeCards(visible)):emptyState('검색 결과 없음','다른 단어로 찾아보세요.');bindEntryList(visible);});
     }
 
     function renderGallery(){
-      const photos=state.photos.filter(item=>item.menuId===state.menu.id).sort((a,b)=>(b.createdAt?.seconds??0)-(a.createdAt?.seconds??0));
-      const uploadAllowed=state.isOwner||state.isFriend;const left=`<article class="page left">${pageHeading(state.menu.name,state.menu.description)}<div class="paper-note"><h3 class="big-title">사진 한 장 붙이기</h3><p class="copy-text">승인된 친구와 다이어리 주인만 사진을 붙일 수 있어요. 사진을 누르면 잘리지 않은 전체 이미지를 큰 화면으로 볼 수 있어요.</p>${uploadAllowed?`<button class="btn primary owner-or-friend" id="openPhotoBtn" type="button" style="margin-top:17px">사진 붙이기</button>`:`<div class="empty-state" style="margin-top:17px;min-height:110px"><div><strong>친구 전용 공간</strong>로그인한 뒤 친구 등록이 완료되면 사진을 올릴 수 있어요.</div></div>`}</div></article>`;
-      const gallery=photos.length?photos.map(item=>`<article class="photo-card"><button class="photo-open" data-lightbox-src="${escapeHtml(safeUrl(item.imageUrl))}" data-lightbox-name="${escapeHtml(item.name||'')}" data-lightbox-message="${escapeHtml(item.message||'')}" data-lightbox-fit="${escapeHtml(item.fitMode||'contain')}" type="button"><img class="${fitClass(item.fitMode||'contain')}" src="${escapeHtml(safeUrl(item.imageUrl))}" alt="친구 사진" loading="lazy" /></button><div class="photo-caption"><strong>${escapeHtml(item.name||'')}</strong><div class="rich-content">${richHtml(item.message||'')}</div><small>${escapeHtml(formatDate(item.createdAt))}</small>${(state.isOwner||state.user?.uid===item.uploaderId)?`<button class="btn danger small" data-delete-photo="${escapeHtml(item.id)}" type="button" style="margin-top:8px">삭제</button>`:''}</div></article>`).join(''):emptyState('아직 붙은 사진이 없어요','첫 번째 추억을 남겨보세요.');
-      $('spread').innerHTML=left+`<article class="page right">${pageHeading('Photo album','친구들이 남긴 사진과 메시지')}<div class="gallery-grid">${gallery}</div></article>`;
-      $('openPhotoBtn')?.addEventListener('click',()=>openModal('photoModal'));$('spread').querySelectorAll('[data-delete-photo]').forEach(btn=>btn.addEventListener('click',()=>deletePhoto(btn.dataset.deletePhoto)));
+      const items=state.photos.filter(item=>item.menuId===state.menu.id).sort((a,b)=>(b.createdAt?.seconds??0)-(a.createdAt?.seconds??0));
+      const notes=items.filter(item=>item.kind==='guestbook');
+      const photos=items.filter(item=>item.kind!=='guestbook'&&item.imageUrl);
+      const writeAllowed=state.isOwner||state.isFriend;
+      const noteCards=notes.length?notes.map(item=>{
+        const canManage=state.isOwner||state.user?.uid===item.uploaderId;
+        return `<article class="guestbook-card"><div class="guestbook-card-head"><div><strong>${escapeHtml(item.name||'익명')}</strong><small>${escapeHtml(formatDate(item.createdAt))}</small></div></div><div class="guestbook-card-body rich-content">${richHtml(item.message||'')}</div>${canManage?`<div class="guestbook-card-actions"><button class="btn small" data-edit-guestbook="${escapeHtml(item.id)}" type="button">수정</button><button class="btn danger small" data-delete-photo="${escapeHtml(item.id)}" type="button">삭제</button></div>`:''}</article>`;
+      }).join(''):emptyState('아직 방명록이 없어요','친구가 첫 인사를 남길 수 있어요.');
+      const left=`<article class="page left"><div class="guestbook-toolbar">${pageHeading(menuDisplayName(state.menu),state.menu.description)}${writeAllowed?`<button class="btn primary owner-or-friend" id="openGuestbookBtn" type="button">방명록 쓰기</button>`:''}</div><div class="guestbook-list">${noteCards}</div></article>`;
+      const album=photos.length?photos.map(item=>{
+        const canManage=state.isOwner||state.user?.uid===item.uploaderId;
+        return `<article class="photo-card"><button class="photo-open" data-lightbox-src="${escapeHtml(safeUrl(item.imageUrl))}" data-lightbox-name="${escapeHtml(item.name||'')}" data-lightbox-message="${escapeHtml(richPlain(item.message||''))}" type="button"><img class="${fitClass(item.fitMode||'contain')}" src="${escapeHtml(safeUrl(item.imageUrl))}" alt="친구 사진" loading="lazy" /></button><div class="photo-caption"><strong>${escapeHtml(item.name||'')}</strong><div class="rich-content">${richHtml(item.message||'')}</div><small>${escapeHtml(formatDate(item.createdAt))}</small>${canManage?`<button class="btn danger small" data-delete-photo="${escapeHtml(item.id)}" type="button" style="margin-top:8px">삭제</button>`:''}</div></article>`;
+      }).join(''):emptyState('아직 붙은 사진이 없어요','친구들이 준 사진을 이곳에 모아 자랑할 수 있어요.');
+      const right=`<article class="page right"><div class="album-header-row">${pageHeading('앨범','친구들이 남긴 사진')}${writeAllowed?`<button class="btn primary owner-or-friend" id="openPhotoBtn" type="button">사진 붙이기</button>`:''}</div><div class="gallery-grid">${album}</div></article>`;
+      $('spread').innerHTML=left+right;
+      $('openGuestbookBtn')?.addEventListener('click',()=>openGuestbookModal());
+      $('openPhotoBtn')?.addEventListener('click',()=>openModal('photoModal'));
+      $('spread').querySelectorAll('[data-edit-guestbook]').forEach(btn=>btn.addEventListener('click',()=>openGuestbookModal(state.photos.find(item=>item.id===btn.dataset.editGuestbook))));
+      $('spread').querySelectorAll('[data-delete-photo]').forEach(btn=>btn.addEventListener('click',()=>deletePhoto(btn.dataset.deletePhoto)));
     }
+
     function renderFriendsPage(){
       const friends=sortedFriends();const ownerImage=safeUrl(state.home?.linkImage||'');const left=`<article class="page left">${pageHeading(state.menu.name,state.menu.description)}<div class="paper-note"><div class="link-image-preview" style="height:190px">${ownerImage?`<img src="${escapeHtml(ownerImage)}" alt="링크 이미지" />`:'LINK'}</div><h3 class="big-title" style="margin-top:20px">${escapeHtml(state.home?.title||state.slug)}</h3><p class="copy-text">등록된 친구 카드를 누르면 해당 다이어리 홈페이지로 바로 이동해요.</p></div></article>`;
       const cards=friends.length?friends.map(item=>`<button class="friend-link-card" data-public-friend="${escapeHtml(item.id)}" data-friend-slug="${escapeHtml(item.slug||'')}" type="button"><span class="friend-link-image" data-friend-image="${escapeHtml(item.id)}">${item.linkImage?`<img src="${escapeHtml(safeUrl(item.linkImage))}" alt="" />`:'♡'}</span><span><strong data-friend-title="${escapeHtml(item.id)}">${escapeHtml(item.displayName||item.slug||'friend')}</strong><span data-friend-sub="${escapeHtml(item.id)}">#/${escapeHtml(item.slug||item.id)}</span></span></button>`).join(''):emptyState('등록된 친구가 없어요','링크를 교환하고 친구 요청을 승인하면 여기에 표시돼요.');
@@ -660,23 +812,23 @@
       const clean=safeUrl(url);if(!clean)return;const image=$('lightboxImage');image.src=clean;image.classList.remove('cover');image.style.width='auto';image.style.height='auto';image.style.objectFit='contain';$('lightboxName').textContent=richPlain(name,'사진');$('lightboxMessage').textContent=richPlain(message,'');$('lightboxTitle').textContent=richPlain(name,'사진 보기');openModal('photoLightbox');
     }
     function bindLightboxImages(){
-      document.querySelectorAll('#spread img,#linkImagePreview img,#assetGrid img,#entryPreview img,#photoPreview img').forEach(img=>{if(img.dataset.lightboxBound)return;const src=safeUrl(img.dataset.lightboxSrc||img.currentSrc||img.src);if(!src)return;img.dataset.lightboxBound='true';img.dataset.lightboxSrc=src;img.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();openPhotoLightbox(src,img.dataset.lightboxName||img.alt||'',img.dataset.lightboxMessage||'');});});
+      document.querySelectorAll('#spread img,#linkImagePreview img,#assetGrid img,#entryPreview img,#photoPreview img,#leftSidePhotoPreview img,#rightSidePhotoPreview img').forEach(img=>{if(img.dataset.lightboxBound)return;const src=safeUrl(img.dataset.lightboxSrc||img.currentSrc||img.src);if(!src)return;img.dataset.lightboxBound='true';img.dataset.lightboxSrc=src;img.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();openPhotoLightbox(src,img.dataset.lightboxName||img.alt||'',img.dataset.lightboxMessage||'');});});
     }
 
     function renderLibrary(){
-      const books=sorted(state.books);$('bookshelf').innerHTML=books.map(book=>`<article class="book-card ${state.book?.id===book.id?'active':''}" data-book-id="${escapeHtml(book.id)}" style="--book-cover:${escapeHtml(book.cover||DEFAULT_THEME.cover)};--book-deep:${escapeHtml(book.coverDeep||DEFAULT_THEME.coverDeep)};--book-image:${book.coverImage?`url(&quot;${escapeHtml(safeUrl(book.coverImage))}&quot;)`:'none'}"><div class="book-card-actions admin-only"><button data-edit-book="${escapeHtml(book.id)}" type="button" title="수정">✎</button></div><small>${book.isPublic===false?'PRIVATE DIARY':'DIARY'}</small><strong>${escapeHtml(book.title||'Untitled')}</strong><span>${escapeHtml(book.subtitle||'')}</span></article>`).join('')+(state.isOwner?`<button class="book-card admin-only" id="libraryNewBookCard" type="button" style="--book-cover:#cdbfc3;--book-deep:#9b858d;align-items:center;justify-content:center;text-align:center"><strong>＋ 새 다이어리</strong><span>새로운 페어나 세계관을 위한 빈 다이어리</span></button>`:'');
+      const books=sorted(state.books);$('bookshelf').innerHTML=books.map(book=>`<article class="book-card ${state.book?.id===book.id?'active':''}" data-book-id="${escapeHtml(book.id)}" style="--book-cover:${escapeHtml(book.cover||DEFAULT_THEME.cover)};--book-deep:${escapeHtml(book.coverDeep||DEFAULT_THEME.coverDeep)};--book-image:${book.coverImage?`url(&quot;${escapeHtml(safeUrl(book.coverImage))}&quot;)`:'none'}"><div class="book-card-actions admin-only"><button data-edit-book="${escapeHtml(book.id)}" type="button" title="수정">✎</button></div><small>${book.lockEnabled===true?'LOCKED DIARY':book.isPublic===false?'PRIVATE DIARY':'DIARY'}</small><strong>${escapeHtml(book.title||'Untitled')}${book.lockEnabled===true?'<span class="lock-badge">LOCK</span>':''}</strong><span>${escapeHtml(book.subtitle||'')}</span></article>`).join('')+(state.isOwner?`<button class="book-card admin-only" id="libraryNewBookCard" type="button" style="--book-cover:#cdbfc3;--book-deep:#9b858d;align-items:center;justify-content:center;text-align:center"><strong>＋ 새 다이어리</strong><span>새로운 페어나 세계관을 위한 빈 다이어리</span></button>`:'');
       $('bookshelf').querySelectorAll('[data-book-id]').forEach(card=>card.addEventListener('click',event=>{if(event.target.closest('[data-edit-book]'))return;switchBook(card.dataset.bookId);}));
       $('bookshelf').querySelectorAll('[data-edit-book]').forEach(btn=>btn.addEventListener('click',event=>{event.stopPropagation();openBookModal(getBook(btn.dataset.editBook));}));$('libraryNewBookCard')?.addEventListener('click',()=>openBookModal());
     }
 
     function renderAdmin(){ if(!state.book)return;fillBookForm();renderColorGrid();renderAssetGrid();renderMenuAdmin();renderContentAdmin();renderFriendAdmin();renderLinkImageEditor(); }
-    function fillBookForm(){const b=state.book;$('homeTitleInput').value=state.home?.title||'';$('homeSlugInput').value=buildHomeLink(state.slug);[['bookTitleInput','title'],['bookSubtitleInput','subtitle'],['coverMenuNameInput','coverMenuName'],['coverEyebrowInput','coverEyebrow'],['coverTitleInput','coverTitle'],['coverSubtitleInput','coverSubtitle'],['coverFooterInput','coverFooter'],['coverCaptionInput','coverCaption'],['coverNoteInput','coverNote']].forEach(([id,key])=>$(id).value=b[key]||'');$('coverAlignInput').value=b.coverAlign||'center';$('coverHiddenInput').checked=b.coverHidden===true;$('bookPublicInput').value=String(b.isPublic!==false);syncRichEditorsFromSources($('adminDrawer'));}
+    function fillBookForm(){const b=state.book;$('homeTitleInput').value=state.home?.title||'';$('homeSlugInput').value=buildHomeLink(state.slug);[['bookTitleInput','title'],['bookSubtitleInput','subtitle'],['coverMenuNameInput','coverMenuName'],['coverEyebrowInput','coverEyebrow'],['coverTitleInput','coverTitle'],['coverSubtitleInput','coverSubtitle'],['coverFooterInput','coverFooter'],['coverCaptionInput','coverCaption'],['coverNoteInput','coverNote']].forEach(([id,key])=>$(id).value=b[key]||'');$('coverAlignInput').value=b.coverAlign||'center';$('coverHiddenInput').checked=b.coverHidden===true;$('bookPublicInput').value=String(b.isPublic!==false);$('homeLockEnabledInput').checked=state.home?.lockEnabled===true;$('homePasswordInput').value='';$('homePasswordField').hidden=!$('homeLockEnabledInput').checked;$('bookLockEnabledInput').checked=b.lockEnabled===true;$('bookPasswordInput').value='';$('bookPasswordField').hidden=!$('bookLockEnabledInput').checked;syncRichEditorsFromSources($('adminDrawer'));}
     function renderColorGrid(){ $('colorGrid').innerHTML=Object.entries(THEME_KEYS).map(([key,[label,def]])=>`<label class="color-field"><span>${label}</span><input type="color" data-theme-key="${key}" value="${escapeHtml(state.book?.[key]||def)}" /></label>`).join('');$('colorGrid').querySelectorAll('[data-theme-key]').forEach(input=>input.addEventListener('input',()=>{state.book={...state.book,[input.dataset.themeKey]:input.value};applyTheme(state.book);renderLibrary();})); }
     function renderAssetGrid(){ $('assetGrid').innerHTML=Object.entries(ASSET_KEYS).map(([key,[label,help]])=>`<div class="asset-box"><strong>${label}</strong><p>${help}</p><div class="asset-thumb">${state.tempAssets[key]?.preview||state.book?.[key]?`<img src="${escapeHtml(state.tempAssets[key]?.preview||safeUrl(state.book[key]))}" alt="" />`:'＋'}</div><div class="asset-actions"><label class="btn soft" for="asset-${key}">이미지 선택</label><input class="file-input" id="asset-${key}" data-asset-key="${key}" type="file" accept="image/jpeg,image/png,image/webp" /><button class="btn" data-edit-asset="${key}" type="button">편집</button><button class="btn" data-clear-asset="${key}" type="button">지우기</button></div></div>`).join('');$('assetGrid').querySelectorAll('[data-asset-key]').forEach(input=>input.addEventListener('change',()=>previewAsset(input.dataset.assetKey,input.files?.[0])));$('assetGrid').querySelectorAll('[data-edit-asset]').forEach(btn=>btn.addEventListener('click',()=>openImageEditor('asset',{key:btn.dataset.editAsset,blob:state.tempAssets[btn.dataset.editAsset]?.blob,url:state.tempAssets[btn.dataset.editAsset]?.preview||state.book?.[btn.dataset.editAsset]})));$('assetGrid').querySelectorAll('[data-clear-asset]').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.clearAsset;const previous=state.tempAssets[key]||{};previous.preview&&URL.revokeObjectURL(previous.preview);const originalUrl=previous.originalUrl??(state.book?.[key]&&!String(state.book[key]).startsWith('blob:')?state.book[key]:'');state.tempAssets[key]={clear:true,originalUrl};state.book={...state.book,[key]:''};applyTheme(state.book);renderAssetGrid();renderLibrary();renderSpread();})); }
-    function renderMenuAdmin(){const menus=sorted(state.menus);const coverHidden=state.book?.coverHidden===true;const coverItem=`<div class="admin-list-item ${coverHidden?'is-hidden':''}"><div><strong>${escapeHtml(state.book?.coverMenuName||'표지')}${coverHidden?'<span class="status-badge">숨김</span>':''}</strong><span>표지 메뉴 · 삭제는 할 수 없고 숨길 수 있어요.</span></div><div class="admin-item-actions"><button class="btn small" id="toggleCoverMenuBtn" type="button">${coverHidden?'표시':'숨기기'}</button></div></div>`;$('menuAdminList').innerHTML=coverItem+(menus.length?menus.map((menu,index)=>`<div class="admin-list-item ${menu.hidden===true?'is-hidden':''}"><div><strong>${escapeHtml(menu.name)}${menu.hidden===true?'<span class="status-badge">숨김</span>':''}</strong><span>${menuTypeLabel(menu.type)}${menu.type==='board'?` · ${menu.boardLayout==='list'?'목록형':'포토카드형'}`:''} · ${escapeHtml(menu.description||'설명 없음')}</span></div><div class="admin-item-actions"><button class="btn small" data-menu-up="${menu.id}" ${index===0?'disabled':''} type="button">↑</button><button class="btn small" data-menu-down="${menu.id}" ${index===menus.length-1?'disabled':''} type="button">↓</button><button class="btn small" data-menu-toggle="${menu.id}" type="button">${menu.hidden===true?'표시':'숨기기'}</button><button class="btn small" data-menu-edit="${menu.id}" type="button">수정</button><button class="btn danger small" data-menu-delete="${menu.id}" type="button">삭제</button></div></div>`).join(''):emptyState('메뉴가 없어요','첫 메뉴를 추가해보세요.'));
+    function renderMenuAdmin(){const menus=sorted(state.menus);const coverHidden=state.book?.coverHidden===true;const coverItem=`<div class="admin-list-item ${coverHidden?'is-hidden':''}"><div><strong>${escapeHtml(state.book?.coverMenuName||'표지')}${coverHidden?'<span class="status-badge">숨김</span>':''}</strong><span>표지 메뉴 · 삭제는 할 수 없고 숨길 수 있어요.</span></div><div class="admin-item-actions"><button class="btn small" id="toggleCoverMenuBtn" type="button">${coverHidden?'표시':'숨기기'}</button></div></div>`;$('menuAdminList').innerHTML=coverItem+(menus.length?menus.map((menu,index)=>`<div class="admin-list-item ${menu.hidden===true?'is-hidden':''}"><div><strong>${escapeHtml(menuDisplayName(menu))}${menu.hidden===true?'<span class="status-badge">숨김</span>':''}${menu.accessMode==='owner'?'<span class="status-badge">나만 보기</span>':menu.accessMode==='password'?'<span class="status-badge">비밀번호</span>':''}</strong><span>${menuTypeLabel(menu.type)}${menu.type==='board'?` · ${menu.boardLayout==='list'?'목록형':'포토카드형'}`:''} · ${escapeHtml(menu.description||'설명 없음')}</span></div><div class="admin-item-actions"><button class="btn small" data-menu-up="${menu.id}" ${index===0?'disabled':''} type="button">↑</button><button class="btn small" data-menu-down="${menu.id}" ${index===menus.length-1?'disabled':''} type="button">↓</button><button class="btn small" data-menu-toggle="${menu.id}" type="button">${menu.hidden===true?'표시':'숨기기'}</button><button class="btn small" data-menu-edit="${menu.id}" type="button">수정</button><button class="btn danger small" data-menu-delete="${menu.id}" type="button">삭제</button></div></div>`).join(''):emptyState('메뉴가 없어요','첫 메뉴를 추가해보세요.'));
       $('toggleCoverMenuBtn')?.addEventListener('click',toggleCoverMenu);$('menuAdminList').querySelectorAll('[data-menu-toggle]').forEach(btn=>btn.addEventListener('click',()=>toggleMenuVisibility(btn.dataset.menuToggle)));$('menuAdminList').querySelectorAll('[data-menu-edit]').forEach(btn=>btn.addEventListener('click',()=>openMenuModal(state.menus.find(item=>item.id===btn.dataset.menuEdit))));$('menuAdminList').querySelectorAll('[data-menu-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteMenu(btn.dataset.menuDelete)));$('menuAdminList').querySelectorAll('[data-menu-up]').forEach(btn=>btn.addEventListener('click',()=>moveMenu(btn.dataset.menuUp,-1)));$('menuAdminList').querySelectorAll('[data-menu-down]').forEach(btn=>btn.addEventListener('click',()=>moveMenu(btn.dataset.menuDown,1)));
     }
-    function renderContentAdmin(){if(!state.menu||['cover','gallery','friends'].includes(state.menu.type)){$('contentHelp').textContent='표지·사진첩·친구 목록은 각각 전용 화면에서 관리해요.';$('drawerAddContentBtn').disabled=true;$('contentAdminList').innerHTML=emptyState('관리할 일반 내용이 없어요','다른 메뉴를 선택해보세요.');return;}$('drawerAddContentBtn').disabled=false;$('contentHelp').textContent=`${state.menu.name} · ${menuTypeLabel(state.menu.type)}`;const entries=entriesForMenu();$('contentAdminList').innerHTML=entries.length?entries.map(item=>`<div class="admin-list-item"><div><strong>${escapeHtml(richPlain(item.title||item.name,'—'))}</strong><span>${escapeHtml(richPlain(item.subtitle||item.tagline||item.date,''))}</span></div><div class="admin-item-actions"><button class="btn small" data-entry-edit="${item.id}" type="button">수정</button><button class="btn danger small" data-entry-delete="${item.id}" type="button">삭제</button></div></div>`).join(''):emptyState('내용이 없어요','새 내용을 추가해보세요.');$('contentAdminList').querySelectorAll('[data-entry-edit]').forEach(btn=>btn.addEventListener('click',()=>openContentModal(entries.find(item=>item.id===btn.dataset.entryEdit))));$('contentAdminList').querySelectorAll('[data-entry-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteEntry(btn.dataset.entryDelete)));}
+    function renderContentAdmin(){if(!state.menu||['cover','gallery','friends'].includes(state.menu.type)){$('contentHelp').textContent='표지·방명록·친구 목록은 각각 전용 화면에서 관리해요.';$('drawerAddContentBtn').disabled=true;$('contentAdminList').innerHTML=emptyState('관리할 일반 내용이 없어요','다른 메뉴를 선택해보세요.');return;}$('drawerAddContentBtn').disabled=false;$('contentHelp').textContent=`${menuDisplayName(state.menu)} · ${menuTypeLabel(state.menu.type)}`;const entries=entriesForMenu();$('contentAdminList').innerHTML=entries.length?entries.map(item=>`<div class="admin-list-item"><div><strong>${escapeHtml(richPlain(item.title||item.name,'—'))}</strong><span>${escapeHtml(richPlain(item.subtitle||item.tagline||item.date,''))}</span></div><div class="admin-item-actions"><button class="btn small" data-entry-edit="${item.id}" type="button">수정</button><button class="btn danger small" data-entry-delete="${item.id}" type="button">삭제</button></div></div>`).join(''):emptyState('내용이 없어요','새 내용을 추가해보세요.');$('contentAdminList').querySelectorAll('[data-entry-edit]').forEach(btn=>btn.addEventListener('click',()=>openContentModal(entries.find(item=>item.id===btn.dataset.entryEdit))));$('contentAdminList').querySelectorAll('[data-entry-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteEntry(btn.dataset.entryDelete)));}
     function renderFriendAdmin(){
       $('myLinkInput').value=buildHomeLink();
       $('requestList').innerHTML=state.friendRequests.length?state.friendRequests.map(item=>`<div class="request-card"><strong>${escapeHtml(item.fromName||item.fromSlug||'친구')}</strong><p>#/${escapeHtml(item.fromSlug||'')}</p><div style="display:flex;gap:6px"><button class="btn primary small" data-accept-request="${escapeHtml(item.id)}" type="button">수락</button><button class="btn danger small" data-reject-request="${escapeHtml(item.id)}" type="button">거절</button></div></div>`).join(''):emptyState('받은 요청 없음','새 요청이 오면 여기에 표시돼요.');
@@ -692,7 +844,7 @@
     }
     function clearLinkImage(){state.tempHomeAsset?.preview&&URL.revokeObjectURL(state.tempHomeAsset.preview);const originalUrl=state.tempHomeAsset?.originalUrl??(state.home?.linkImage&&!String(state.home.linkImage).startsWith('blob:')?state.home.linkImage:'');state.tempHomeAsset={clear:true,originalUrl};state.home={...(state.home||{}),linkImage:''};renderLinkImageEditor();if(state.menu?.type==='friends')renderSpread();}
     async function addFriendsMenu(){
-      if(!state.isOwner||state.menus.some(item=>item.type==='friends'))return;try{await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'menus'),{name:'친구',description:'친구 다이어리로 바로 이동하는 링크 목록',type:'friends',order:state.menus.length,createdAt:serverTimestamp()});notify('친구 탭을 추가했어요. 메뉴 관리에서 이름을 바꾸거나 삭제할 수 있어요.');}catch(error){notify(error.message,'error');}
+      if(!state.isOwner||state.menus.some(item=>item.type==='friends'))return;try{await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'menus'),{name:'친구',description:'친구 다이어리로 바로 이동하는 링크 목록',type:'friends',accessMode:'public',hidden:false,order:state.menus.length,createdAt:serverTimestamp()});notify('친구 탭을 추가했어요. 메뉴 관리에서 이름을 바꾸거나 삭제할 수 있어요.');}catch(error){notify(error.message,'error');}
     }
 
     function openLibrary(){renderLibrary();$('libraryBackdrop').classList.add('open');$('libraryModal').classList.add('open');}
@@ -700,21 +852,45 @@
     function openDrawer(tab='book'){document.body.classList.add('drawer-open');$('adminDrawer').classList.add('open');selectDrawerTab(tab);setTimeout(()=>renderSpread(),260);}
     function closeDrawer(){document.body.classList.remove('drawer-open');$('adminDrawer').classList.remove('open');updateBodyFlags();setTimeout(()=>renderSpread(),260);}
     function selectDrawerTab(tab){document.querySelectorAll('.drawer-tab').forEach(btn=>btn.classList.toggle('active',btn.dataset.drawerTab===tab));document.querySelectorAll('.drawer-panel').forEach(panel=>panel.classList.toggle('active',panel.dataset.drawerPanel===tab));}
-    function openBookModal(book=null){$('bookModalTitle').textContent=book?'다이어리 수정':'새 다이어리 만들기';$('editingBookId').value=book?.id||'';$('newBookTitle').value=book?.title||'';$('newBookSubtitle').value=book?.subtitle||'';$('newBookColor').value=book?.cover||'#d88da6';$('newBookDeepColor').value=book?.coverDeep||'#a95170';openModal('bookModal');}
-    function updateMenuTypeFields(){const type=$('menuTypeInput').value;$('boardLayoutField').hidden=type!=='board';}
-    function openMenuModal(menu=null){$('menuModalTitle').textContent=menu?'메뉴 수정':'메뉴 추가';$('editingMenuId').value=menu?.id||'';$('menuNameInput').value=menu?.name||'';$('menuDescriptionInput').value=menu?.description||'';$('menuTypeInput').value=menu?.type||'pages';$('menuHiddenInput').checked=menu?.hidden===true;$('boardLayoutInput').value=menu?.boardLayout||'cards';document.querySelectorAll('[data-menu-type]').forEach(btn=>btn.classList.toggle('active',btn.dataset.menuType===$('menuTypeInput').value));updateMenuTypeFields();openModal('menuModal');}
+    function openBookModal(book=null){$('bookModalTitle').textContent=book?'다이어리 수정':'새 다이어리 만들기';$('editingBookId').value=book?.id||'';$('newBookTitle').value=book?.title||'';$('newBookSubtitle').value=book?.subtitle||'';$('newBookColor').value=book?.cover||'#d88da6';$('newBookDeepColor').value=book?.coverDeep||'#a95170';$('newBookLockEnabled').checked=book?.lockEnabled===true;$('newBookPassword').value='';openModal('bookModal');}
+    function updateMenuTypeFields(){const type=$('menuTypeInput').value;$('boardLayoutField').hidden=type!=='board';$('menuPasswordField').hidden=$('menuAccessInput').value!=='password';}
+    function openMenuModal(menu=null){$('menuModalTitle').textContent=menu?'메뉴 수정':'메뉴 추가';$('editingMenuId').value=menu?.id||'';$('menuNameInput').value=menu?.name||'';$('menuDescriptionInput').value=menu?.description||'';$('menuTypeInput').value=menu?.type||'pages';$('menuHiddenInput').checked=menu?.hidden===true;$('boardLayoutInput').value=menu?.boardLayout||'cards';$('menuAccessInput').value=menu?.accessMode||'public';$('menuPasswordInput').value='';document.querySelectorAll('[data-menu-type]').forEach(btn=>btn.classList.toggle('active',btn.dataset.menuType===$('menuTypeInput').value));updateMenuTypeFields();openModal('menuModal');}
     function setPageTemplate(value='pair-split'){
       const template=value||'pair-split';$('pageTemplateInput').value=template;document.querySelectorAll('[data-page-template]').forEach(btn=>btn.classList.toggle('active',btn.dataset.pageTemplate===template));
       const isPair=template.startsWith('pair-');$('pairFields').hidden=!isPair;$('pairSplitNotes').hidden=template!=='pair-split';$('entryBodyField').hidden=template==='pair-split';$('storyFields').hidden=template!=='story';$('freeLayoutField').hidden=template!=='free';$('entryBodyLabel').textContent=template==='pair-cards'?'페어 소개·관계 메모':template==='story'?'전체 서사 요약':'자유 본문';
     }
     function clearEntryMedia(){state.entryMediaItems.forEach(item=>{if(item.type==='file'&&item.preview)URL.revokeObjectURL(item.preview);});state.entryMediaItems=[];state.dragMediaId=null;}
-    function openContentModal(entry=null){if(!state.menu||['cover','gallery','friends'].includes(state.menu.type))return;clearEntryMedia();$('editingEntryId').value=entry?.id||'';$('contentModalTitle').textContent=entry?'내용 수정':`${state.menu.name} 추가`;$('genericFields').hidden=state.menu.type!=='pages';$('personaFields').hidden=state.menu.type!=='persona';$('boardFields').hidden=state.menu.type!=='board';
+    function clearEntrySideMedia(){
+      ['left','right'].forEach(side=>{const item=state.entrySideMedia?.[side];if(item?.type==='file'&&item.preview)URL.revokeObjectURL(item.preview);});
+      state.entrySideMedia={left:null,right:null};
+    }
+    function setEntrySideFromFile(side,file){
+      if(!file)return;const previous=state.entrySideMedia?.[side];if(previous?.type==='file'&&previous.preview)URL.revokeObjectURL(previous.preview);
+      state.entrySideMedia[side]={type:'file',file,preview:URL.createObjectURL(file),originalUrl:previous?.originalUrl||''};renderEntrySideMedia();
+    }
+    function clearEntrySide(side){
+      const previous=state.entrySideMedia?.[side];if(previous?.type==='file'&&previous.preview)URL.revokeObjectURL(previous.preview);
+      state.entrySideMedia[side]={type:'clear',preview:'',url:'',originalUrl:previous?.originalUrl||previous?.url||''};renderEntrySideMedia();
+    }
+    function renderEntrySideMedia(){
+      ['left','right'].forEach(side=>{
+        const item=state.entrySideMedia?.[side],preview=safeUrl(item?.preview||item?.url||'');
+        const box=$(side==='left'?'leftSidePhotoPreview':'rightSidePhotoPreview');
+        box.innerHTML=preview?`<img src="${escapeHtml(preview)}" alt="${side==='left'?'왼쪽':'오른쪽'} 페이지 사진" />`:'사진 없음';
+        const edit=$(side==='left'?'editLeftSidePhotoBtn':'editRightSidePhotoBtn');if(edit)edit.disabled=!preview;
+      });
+      requestAnimationFrame(bindLightboxImages);
+    }
+    function openContentModal(entry=null){if(!state.menu||['cover','gallery','friends'].includes(state.menu.type))return;clearEntryMedia();clearEntrySideMedia();$('editingEntryId').value=entry?.id||'';$('contentModalTitle').textContent=entry?'내용 수정':`${menuDisplayName(state.menu)} 추가`;$('genericFields').hidden=state.menu.type!=='pages';$('personaFields').hidden=state.menu.type!=='persona';$('boardFields').hidden=state.menu.type!=='board';
       $('entryTitleInput').value=entry?.title||'';$('entrySubtitleInput').value=entry?.subtitle||'';$('entryBodyInput').value=entry?.body||'';$('entryLayoutInput').value=entry?.layout||'text-left';
       $('personANameInput').value=entry?.personAName||'';$('personAInfoInput').value=entry?.personAInfo||'';$('personANoteInput').value=entry?.personANote||(entry?.pageTemplate==='pair-split'?entry?.body||'':'');$('personBNameInput').value=entry?.personBName||'';$('personBInfoInput').value=entry?.personBInfo||'';$('personBNoteInput').value=entry?.personBNote||'';$('storyTimelineInput').value=entry?.storyTimeline||'';setPageTemplate(entry?.pageTemplate||(entry?'free':'pair-split'));
       $('personaInformationInput').value=entry?personaInformation(entry):'';$('personaPromptInput').value=entry?.prompt||'';$('personaMemoInput').value=entry?.memo||'';
       $('postNumberInput').value=entry?.number||'';$('postDateInput').value=entry?.date||'';$('postTitleInput').value=entry?.title||'';$('postTagsInput').value=entry?.tags||'';$('postBodyInput').value=entry?.body||'';
       setEntryImageFit(entry?.imageFit||'contain');
-      state.entryMediaItems=(entry?.imageUrls||[]).slice(0,6).map((url,index)=>({id:`stored-${index}-${randomId()}`,type:'url',url,preview:url}));state.entryFiles=[];$('entryFilesInput').value='';syncRichEditorsFromSources($('contentModal'));renderEntryMedia();openModal('contentModal');
+      const legacyImages=entry?.imageUrls||[],hasSideFields=!!(entry?.leftImageUrl||entry?.rightImageUrl);
+      const leftUrl=entry?.leftImageUrl||legacyImages[0]||'',rightUrl=entry?.rightImageUrl||legacyImages[1]||'';
+      state.entrySideMedia={left:leftUrl?{type:'url',url:leftUrl,preview:leftUrl,originalUrl:leftUrl}:null,right:rightUrl?{type:'url',url:rightUrl,preview:rightUrl,originalUrl:rightUrl}:null};
+      state.entryMediaItems=(hasSideFields?legacyImages:legacyImages.slice(2)).slice(0,6).map((url,index)=>({id:`stored-${index}-${randomId()}`,type:'url',url,preview:url}));state.entryFiles=[];$('entryFilesInput').value='';$('leftSidePhotoInput').value='';$('rightSidePhotoInput').value='';syncRichEditorsFromSources($('contentModal'));renderEntrySideMedia();renderEntryMedia();openModal('contentModal');
     }
     function renderEntryMedia(){const container=$('entryPreview');container.hidden=!state.entryMediaItems.length;container.innerHTML=state.entryMediaItems.map((item,index)=>`<div class="sortable-media" draggable="true" data-media-id="${escapeHtml(item.id)}"><span class="media-order">${index+1}</span><img class="${fitClass($('entryImageFitInput')?.value||'contain')}" src="${escapeHtml(safeUrl(item.preview||item.url))}" alt="사진 ${index+1}" /><div class="media-tools"><button data-move-media="-1" data-media-id="${escapeHtml(item.id)}" type="button">◀</button><button data-move-media="1" data-media-id="${escapeHtml(item.id)}" type="button">▶</button><button data-edit-media="${escapeHtml(item.id)}" type="button">편집</button><button class="remove" data-remove-media="${escapeHtml(item.id)}" type="button">삭제</button></div></div>`).join('');$('entryFilesName').textContent=state.entryMediaItems.length?`${state.entryMediaItems.length}장 · 끌어서 순서 변경`:'사진 없이 저장 가능';
       container.querySelectorAll('.sortable-media').forEach(card=>{card.addEventListener('dragstart',event=>{state.dragMediaId=card.dataset.mediaId;card.classList.add('dragging');event.dataTransfer.effectAllowed='move';});card.addEventListener('dragend',()=>{state.dragMediaId=null;container.querySelectorAll('.sortable-media').forEach(item=>item.classList.remove('dragging','drag-over'));});card.addEventListener('dragover',event=>{event.preventDefault();card.classList.add('drag-over');});card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));card.addEventListener('drop',event=>{event.preventDefault();card.classList.remove('drag-over');const from=state.entryMediaItems.findIndex(item=>item.id===state.dragMediaId),to=state.entryMediaItems.findIndex(item=>item.id===card.dataset.mediaId);if(from<0||to<0||from===to)return;const [moved]=state.entryMediaItems.splice(from,1);state.entryMediaItems.splice(to,0,moved);renderEntryMedia();});});
@@ -846,6 +1022,9 @@
         if(e.target==='entry'){
           const item=state.entryMediaItems.find(media=>media.id===e.itemId);
           if(item){if(item.type==='file'&&item.preview)URL.revokeObjectURL(item.preview);Object.assign(item,{type:'file',file,preview:previewUrl,url:''});renderEntryMedia();}
+        }else if(e.target==='entry-side'){
+          const side=e.side,previous=state.entrySideMedia?.[side]||{};if(previous.type==='file'&&previous.preview)URL.revokeObjectURL(previous.preview);
+          state.entrySideMedia[side]={type:'file',file,preview:previewUrl,originalUrl:previous.originalUrl||previous.url||''};renderEntrySideMedia();
         }else if(e.target==='photo'){
           state.photoFile=file;previewFiles([file],'photoPreview');$('photoFileName').textContent='편집된 사진.webp';$('photoEditBtn').hidden=false;URL.revokeObjectURL(previewUrl);
         }else if(e.target==='link'){
@@ -902,49 +1081,217 @@
 
     async function deleteStoredUrl(url){if(!url||String(url).startsWith('blob:'))return;try{await deleteObject(ref(state.storage,url));}catch{}}
     async function saveBookSettings(){
-      if(!state.isOwner)return;try{$('saveBookBtn').disabled=true;const oldAssetUrls={};const updates={title:$('bookTitleInput').value.trim()||'Untitled Diary',subtitle:$('bookSubtitleInput').value.trim(),coverMenuName:$('coverMenuNameInput').value.trim()||'표지',coverEyebrow:cleanRichHtml($('coverEyebrowInput').value),coverTitle:cleanRichHtml($('coverTitleInput').value),coverSubtitle:cleanRichHtml($('coverSubtitleInput').value),coverFooter:cleanRichHtml($('coverFooterInput').value),coverCaption:cleanRichHtml($('coverCaptionInput').value),coverNote:cleanRichHtml($('coverNoteInput').value),coverAlign:$('coverAlignInput').value,coverHidden:$('coverHiddenInput').checked,isPublic:$('bookPublicInput').value==='true',updatedAt:serverTimestamp()};
-      Object.keys(THEME_KEYS).forEach(key=>updates[key]=state.book[key]||DEFAULT_THEME[key]);
-      for(const [key,value] of Object.entries(state.tempAssets)){oldAssetUrls[key]=value.originalUrl||'';if(value.clear)updates[key]='';else if(value.blob){const fileRef=ref(state.storage,`homes/${state.ownerId}/books/${state.book.id}/assets/${key}-${randomId()}.webp`);await uploadBytes(fileRef,value.blob,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});updates[key]=await getDownloadURL(fileRef);}}
-      await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id),updates);
-      const homeTitle=$('homeTitleInput').value.trim()||`${state.profile?.displayName||state.slug}의 다이어리`;const homeUpdates={title:homeTitle,updatedAt:serverTimestamp()};let oldLinkImage='';
-      if(state.tempHomeAsset){
-        if(!state.user)throw new Error('로그인 정보가 만료됐어요. 다시 로그인한 뒤 저장해 주세요.');
-        if(state.user.uid!==state.ownerId)throw new Error('내 다이어리에서만 링크 이미지를 바꿀 수 있어요.');
-        await state.user.getIdToken(true);
-        oldLinkImage=state.tempHomeAsset.originalUrl||'';
-        if(state.tempHomeAsset.clear)homeUpdates.linkImage='';
-        else if(state.tempHomeAsset.blob){
-          const ownerUid=state.user.uid;
-          const fileRef=ref(state.storage,`homes/${ownerUid}/profile/link-${randomId()}.webp`);
-          try{
-            await uploadBytes(fileRef,state.tempHomeAsset.blob,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});
-          }catch(error){
-            if(error?.code==='storage/unauthorized')throw new Error('링크 이미지 업로드 권한이 없어요. Firebase Storage의 최신 규칙을 게시한 뒤 로그아웃·로그인해 주세요.');
-            throw error;
+      if(!state.isOwner)return;
+      try{
+        $('saveBookBtn').disabled=true;
+        const oldAssetUrls={};
+        const bookLockEnabled=$('bookLockEnabledInput').checked;
+        let bookLockHash=state.book?.lockHash||'';
+        if(bookLockEnabled&&$('bookPasswordInput').value)bookLockHash=await sha256($('bookPasswordInput').value);
+        if(bookLockEnabled&&!bookLockHash)throw new Error('현재 다이어리에 사용할 비밀번호를 입력해 주세요.');
+        const updates={
+          title:$('bookTitleInput').value.trim()||'Untitled Diary',
+          subtitle:$('bookSubtitleInput').value.trim(),
+          coverMenuName:$('coverMenuNameInput').value.trim()||'표지',
+          coverEyebrow:cleanRichHtml($('coverEyebrowInput').value),
+          coverTitle:cleanRichHtml($('coverTitleInput').value),
+          coverSubtitle:cleanRichHtml($('coverSubtitleInput').value),
+          coverFooter:cleanRichHtml($('coverFooterInput').value),
+          coverCaption:cleanRichHtml($('coverCaptionInput').value),
+          coverNote:cleanRichHtml($('coverNoteInput').value),
+          coverAlign:$('coverAlignInput').value,
+          coverHidden:$('coverHiddenInput').checked,
+          isPublic:bookLockEnabled?true:$('bookPublicInput').value==='true',
+          lockEnabled:bookLockEnabled,
+          lockHash:bookLockEnabled?bookLockHash:'',
+          updatedAt:serverTimestamp()
+        };
+        Object.keys(THEME_KEYS).forEach(key=>updates[key]=state.book[key]||DEFAULT_THEME[key]);
+        for(const [key,value] of Object.entries(state.tempAssets)){
+          oldAssetUrls[key]=value.originalUrl||'';
+          if(value.clear)updates[key]='';
+          else if(value.blob){
+            const fileRef=ref(state.storage,`homes/${state.ownerId}/books/${state.book.id}/assets/${key}-${randomId()}.webp`);
+            await uploadBytes(fileRef,value.blob,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});
+            updates[key]=await getDownloadURL(fileRef);
           }
-          homeUpdates.linkImage=await getDownloadURL(fileRef);
         }
-      }
-      await updateDoc(doc(state.db,'homes',state.ownerId),homeUpdates);state.home={...(state.home||{}),...homeUpdates};if('linkImage' in homeUpdates)state.home.linkImage=homeUpdates.linkImage;
-      await Promise.all([...Object.values(oldAssetUrls),oldLinkImage].filter(Boolean).map(deleteStoredUrl));state.tempAssets={};if(state.tempHomeAsset?.preview)URL.revokeObjectURL(state.tempHomeAsset.preview);state.tempHomeAsset=null;renderAll();updateBrowserMeta();notify('다이어리 설정을 저장했어요.');
-      }catch(error){notify(error.message,'error');}finally{$('saveBookBtn').disabled=false;}
+        await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id),updates);
+
+        const homeTitle=$('homeTitleInput').value.trim()||`${state.profile?.displayName||state.slug}의 다이어리`;
+        const homeLockEnabled=$('homeLockEnabledInput').checked;
+        let homeLockHash=state.home?.lockHash||'';
+        if(homeLockEnabled&&$('homePasswordInput').value)homeLockHash=await sha256($('homePasswordInput').value);
+        if(homeLockEnabled&&!homeLockHash)throw new Error('홈페이지 전체 잠금에 사용할 비밀번호를 입력해 주세요.');
+        const homeUpdates={title:homeTitle,lockEnabled:homeLockEnabled,lockHash:homeLockEnabled?homeLockHash:'',updatedAt:serverTimestamp()};
+        let oldLinkImage='';
+        if(state.tempHomeAsset){
+          if(!state.user)throw new Error('로그인 정보가 만료됐어요. 다시 로그인한 뒤 저장해 주세요.');
+          if(state.user.uid!==state.ownerId)throw new Error('내 다이어리에서만 링크 이미지를 바꿀 수 있어요.');
+          await state.user.getIdToken(true);
+          oldLinkImage=state.tempHomeAsset.originalUrl||'';
+          if(state.tempHomeAsset.clear)homeUpdates.linkImage='';
+          else if(state.tempHomeAsset.blob){
+            const ownerUid=state.user.uid;
+            const fileRef=ref(state.storage,`homes/${ownerUid}/profile/link-${randomId()}.webp`);
+            try{await uploadBytes(fileRef,state.tempHomeAsset.blob,{contentType:'image/webp',cacheControl:'public,max-age=31536000'});}
+            catch(error){
+              if(error?.code==='storage/unauthorized')throw new Error('링크 이미지 업로드 권한이 없어요. Firebase Storage의 최신 규칙을 게시한 뒤 로그아웃·로그인해 주세요.');
+              throw error;
+            }
+            homeUpdates.linkImage=await getDownloadURL(fileRef);
+          }
+        }
+        await updateDoc(doc(state.db,'homes',state.ownerId),homeUpdates);
+        state.home={...(state.home||{}),...homeUpdates};
+        if('linkImage' in homeUpdates)state.home.linkImage=homeUpdates.linkImage;
+        await Promise.all([...Object.values(oldAssetUrls),oldLinkImage].filter(Boolean).map(deleteStoredUrl));
+        state.tempAssets={};if(state.tempHomeAsset?.preview)URL.revokeObjectURL(state.tempHomeAsset.preview);state.tempHomeAsset=null;
+        renderAll();updateBrowserMeta();notify('다이어리 설정을 저장했어요.');
+      }catch(error){notify(error.message,'error');}
+      finally{$('saveBookBtn').disabled=false;}
     }
 
-    async function createOrEditBook(event){event.preventDefault();if(!state.isOwner)return;const editingId=$('editingBookId').value;const basics={title:$('newBookTitle').value.trim()||'Untitled Diary',subtitle:$('newBookSubtitle').value.trim(),cover:$('newBookColor').value,coverDeep:$('newBookDeepColor').value,updatedAt:serverTimestamp()};try{if(editingId){await updateDoc(doc(state.db,'homes',state.ownerId,'books',editingId),basics);notify('다이어리를 수정했어요.');}else{const created=await addDoc(collection(state.db,'homes',state.ownerId,'books'),{...DEFAULT_BOOK,...basics,order:state.books.length,createdAt:serverTimestamp()});await seedBook(created.id);notify('새 다이어리를 만들었어요.');}closeModal('bookModal');}catch(error){notify(error.message,'error');}}
-    const DEFAULT_MENU_DEFS=[{name:'페어 소개',description:'페어틀·자유 기록·서사 정리 속지를 추가하는 공간',type:'pages',hidden:false},{name:'페르소나',description:'Information · Prompt · Memo를 정리하는 공간',type:'persona',hidden:false},{name:'일기장',description:'글과 사진을 포토카드처럼 남기는 공간',type:'board',boardLayout:'cards',hidden:false},{name:'사진첩',description:'친구와 사진을 나누는 공간',type:'gallery',hidden:false},{name:'친구',description:'친구 다이어리로 바로 이동하는 링크 목록',type:'friends',hidden:false}];
+    async function createOrEditBook(event){
+      event.preventDefault();if(!state.isOwner)return;
+      const editingId=$('editingBookId').value,existing=getBook(editingId);
+      const lockEnabled=$('newBookLockEnabled').checked;
+      let lockHash=existing?.lockHash||'';
+      if(lockEnabled&&$('newBookPassword').value)lockHash=await sha256($('newBookPassword').value);
+      if(lockEnabled&&!lockHash){notify('다이어리 비밀번호를 입력해 주세요.','error');return;}
+      const basics={title:$('newBookTitle').value.trim()||'Untitled Diary',subtitle:$('newBookSubtitle').value.trim(),cover:$('newBookColor').value,coverDeep:$('newBookDeepColor').value,lockEnabled,lockHash:lockEnabled?lockHash:'',isPublic:lockEnabled?true:(existing?.isPublic!==false),updatedAt:serverTimestamp()};
+      try{
+        if(editingId){await updateDoc(doc(state.db,'homes',state.ownerId,'books',editingId),basics);notify('다이어리를 수정했어요.');}
+        else{const created=await addDoc(collection(state.db,'homes',state.ownerId,'books'),{...DEFAULT_BOOK,...basics,order:state.books.length,createdAt:serverTimestamp()});await seedBook(created.id);notify('새 다이어리를 만들었어요.');}
+        closeModal('bookModal');
+      }catch(error){notify(error.message,'error');}
+    }
+
+    const DEFAULT_MENU_DEFS=[
+      {name:'페어 소개',description:'페어틀·자유 기록·서사 정리 속지를 추가하는 공간',type:'pages',accessMode:'public',hidden:false},
+      {name:'페르소나',description:'Information · Prompt · Memo를 정리하는 공간',type:'persona',accessMode:'public',hidden:false},
+      {name:'일기장',description:'글과 사진을 포토카드처럼 남기는 공간',type:'board',boardLayout:'cards',accessMode:'public',hidden:false},
+      {name:'방명록',description:'왼쪽 방명록 · 오른쪽 친구 앨범',type:'gallery',accessMode:'public',hidden:false},
+      {name:'친구',description:'친구 다이어리로 바로 이동하는 링크 목록',type:'friends',accessMode:'public',hidden:false}
+    ];
     async function seedBook(bookId){const batch=writeBatch(state.db);DEFAULT_MENU_DEFS.forEach((item,order)=>batch.set(doc(collection(state.db,'homes',state.ownerId,'books',bookId,'menus')),{...item,order,createdAt:serverTimestamp()}));await batch.commit();}
-    async function ensureDefaultMenusOnce(){if(!state.isOwner||!state.book||state.book.defaultMenusV2===true||state.migratingDefaultMenus)return;state.migratingDefaultMenus=true;try{const existingTypes=new Set(state.menus.map(item=>item.type));const missing=DEFAULT_MENU_DEFS.filter(item=>!existingTypes.has(item.type));const batch=writeBatch(state.db);missing.forEach((item,index)=>batch.set(doc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'menus')),{...item,order:state.menus.length+index,createdAt:serverTimestamp()}));batch.update(doc(state.db,'homes',state.ownerId,'books',state.book.id),{defaultMenusV2:true,updatedAt:serverTimestamp()});await batch.commit();}catch(error){console.warn('default menus',error);}finally{state.migratingDefaultMenus=false;}}
-    async function deleteCurrentBook(){if(!state.isOwner||!state.book)return;if(state.books.length<=1){notify('다이어리 보관함에는 최소 한 권의 다이어리가 필요해요.','error');return;}if(!confirm(`“${state.book.title}” 다이어리와 안의 기록을 모두 삭제할까요?`))return;try{const urls=[state.book.deskImage,state.book.coverImage,state.book.paperLeftImage,state.book.paperRightImage,state.book.coverPhoto,...state.entries.flatMap(item=>item.imageUrls||[]),...state.photos.map(item=>item.imageUrl)].filter(Boolean);await Promise.all([...state.menus.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',item.id))),...state.entries.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'entries',item.id))),...state.photos.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',item.id)))]);await deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id));await Promise.all(urls.map(deleteStoredUrl));closeDrawer();notify('다이어리를 삭제했어요.');}catch(error){notify(error.message,'error');}}
-    async function saveMenu(event){event.preventDefault();if(!state.isOwner||!state.book)return;const id=$('editingMenuId').value;const type=$('menuTypeInput').value;const data={name:$('menuNameInput').value.trim()||'새 메뉴',description:$('menuDescriptionInput').value.trim(),type,hidden:$('menuHiddenInput').checked,boardLayout:type==='board'?$('boardLayoutInput').value:'cards',updatedAt:serverTimestamp()};try{if(id)await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',id),data);else await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'menus'),{...data,order:state.menus.length,createdAt:serverTimestamp()});closeModal('menuModal');notify('메뉴를 저장했어요.');}catch(error){notify(error.message,'error');}}
+    async function ensureDefaultMenusOnce(){
+      if(!state.isOwner||!state.book||state.migratingDefaultMenus)return;
+      const needsDefaults=state.book.defaultMenusV2!==true;
+      const needsAccess=state.book.accessMenusV1!==true||state.menus.some(menu=>!menu.accessMode||menu.name==='사진첩');
+      if(!needsDefaults&&!needsAccess)return;
+      state.migratingDefaultMenus=true;
+      try{
+        const existingTypes=new Set(state.menus.map(item=>item.type)),batch=writeBatch(state.db);
+        if(needsDefaults){
+          DEFAULT_MENU_DEFS.filter(item=>!existingTypes.has(item.type)).forEach((item,index)=>batch.set(doc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'menus')),{...item,order:state.menus.length+index,createdAt:serverTimestamp()}));
+        }
+        state.menus.forEach(menu=>{
+          const changes={};
+          if(!menu.accessMode)changes.accessMode='public';
+          if(menu.type==='gallery'&&menu.name==='사진첩'){changes.name='방명록';changes.description=menu.description||'왼쪽 방명록 · 오른쪽 친구 앨범';}
+          if(Object.keys(changes).length)batch.update(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',menu.id),{...changes,updatedAt:serverTimestamp()});
+        });
+        batch.update(doc(state.db,'homes',state.ownerId,'books',state.book.id),{defaultMenusV2:true,accessMenusV1:true,updatedAt:serverTimestamp()});
+        await batch.commit();
+      }catch(error){console.warn('default menus',error);}
+      finally{state.migratingDefaultMenus=false;}
+    }
+
+    async function deleteCurrentBook(){if(!state.isOwner||!state.book)return;if(state.books.length<=1){notify('다이어리 보관함에는 최소 한 권의 다이어리가 필요해요.','error');return;}if(!confirm(`“${state.book.title}” 다이어리와 안의 기록을 모두 삭제할까요?`))return;try{const urls=[state.book.deskImage,state.book.coverImage,state.book.paperLeftImage,state.book.paperRightImage,state.book.coverPhoto,...state.entries.flatMap(item=>[...(item.imageUrls||[]),item.leftImageUrl,item.rightImageUrl]),...state.photos.map(item=>item.imageUrl)].filter(Boolean);await Promise.all([...state.menus.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',item.id))),...state.entries.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'entries',item.id))),...state.photos.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',item.id)))]);await deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id));await Promise.all(urls.map(deleteStoredUrl));closeDrawer();notify('다이어리를 삭제했어요.');}catch(error){notify(error.message,'error');}}
+    async function saveMenu(event){
+      event.preventDefault();if(!state.isOwner||!state.book)return;
+      const id=$('editingMenuId').value,type=$('menuTypeInput').value,existing=state.menus.find(item=>item.id===id);
+      const accessMode=$('menuAccessInput').value||'public';let passwordHash=existing?.passwordHash||'';
+      if(accessMode==='password'&&$('menuPasswordInput').value)passwordHash=await sha256($('menuPasswordInput').value);
+      if(accessMode==='password'&&!passwordHash){notify('메뉴 비밀번호를 입력해 주세요.','error');return;}
+      const data={name:$('menuNameInput').value.trim()||(type==='gallery'?'방명록':'새 메뉴'),description:$('menuDescriptionInput').value.trim(),type,hidden:$('menuHiddenInput').checked,accessMode,passwordHash:accessMode==='password'?passwordHash:'',boardLayout:type==='board'?$('boardLayoutInput').value:'cards',updatedAt:serverTimestamp()};
+      try{
+        if(id)await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',id),data);
+        else await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'menus'),{...data,order:state.menus.length,createdAt:serverTimestamp()});
+        closeModal('menuModal');notify('메뉴를 저장했어요.');
+      }catch(error){notify(error.message,'error');}
+    }
+
     async function toggleMenuVisibility(id){const menu=state.menus.find(item=>item.id===id);if(!menu)return;try{await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',id),{hidden:menu.hidden!==true,updatedAt:serverTimestamp()});notify(menu.hidden===true?'메뉴를 다시 표시했어요.':'메뉴를 숨겼어요.');}catch(error){notify(error.message,'error');}}
     async function toggleCoverMenu(){try{await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id),{coverHidden:state.book?.coverHidden!==true,updatedAt:serverTimestamp()});notify(state.book?.coverHidden===true?'표지 메뉴를 다시 표시했어요.':'표지 메뉴를 숨겼어요.');}catch(error){notify(error.message,'error');}}
     async function moveMenu(id,direction){const menus=sorted(state.menus);const index=menus.findIndex(item=>item.id===id);const target=index+direction;if(index<0||target<0||target>=menus.length)return;try{const batch=writeBatch(state.db);batch.update(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',menus[index].id),{order:target});batch.update(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',menus[target].id),{order:index});await batch.commit();}catch(error){notify(error.message,'error');}}
-    async function deleteMenu(id){const menu=state.menus.find(item=>item.id===id);if(!menu||!confirm(`“${menu.name}” 메뉴와 연결된 내용을 모두 삭제할까요?`))return;try{const linked=state.entries.filter(item=>item.menuId===id);const linkedPhotos=state.photos.filter(item=>item.menuId===id);await Promise.all([...linked.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'entries',item.id))),...linkedPhotos.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',item.id)))]);await deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',id));await Promise.all([...linked.flatMap(item=>item.imageUrls||[]),...linkedPhotos.map(item=>item.imageUrl)].filter(Boolean).map(deleteStoredUrl));notify('메뉴와 연결된 내용을 삭제했어요.');}catch(error){notify(error.message,'error');}}
-    async function saveContent(event){event.preventDefault();if(!state.isOwner||!state.menu)return;const id=$('editingEntryId').value;const existing=state.entries.find(item=>item.id===id);let data={menuId:state.menu.id,entryType:state.menu.type,imageFit:$('entryImageFitInput').value||'contain',updatedAt:serverTimestamp()};if(state.menu.type==='pages')Object.assign(data,{title:cleanRichHtml($('entryTitleInput').value),subtitle:cleanRichHtml($('entrySubtitleInput').value),body:cleanRichHtml($('entryBodyInput').value),layout:$('entryLayoutInput').value,pageTemplate:$('pageTemplateInput').value,personAName:cleanRichHtml($('personANameInput').value),personAInfo:cleanRichHtml($('personAInfoInput').value),personANote:cleanRichHtml($('personANoteInput').value),personBName:cleanRichHtml($('personBNameInput').value),personBInfo:cleanRichHtml($('personBInfoInput').value),personBNote:cleanRichHtml($('personBNoteInput').value),storyTimeline:$('storyTimelineInput').value});if(state.menu.type==='persona'){const information=cleanRichHtml($('personaInformationInput').value);Object.assign(data,{information,name:richPlain(information,'').slice(0,100),prompt:$('personaPromptInput').value,memo:cleanRichHtml($('personaMemoInput').value)});}if(state.menu.type==='board')Object.assign(data,{number:$('postNumberInput').value.trim(),date:$('postDateInput').value,title:cleanRichHtml($('postTitleInput').value),tags:$('postTagsInput').value.trim(),body:cleanRichHtml($('postBodyInput').value)});try{const submit=$('contentForm').querySelector('[type="submit"]');submit.disabled=true;const oldUrls=existing?.imageUrls||[],urls=[];for(const item of state.entryMediaItems){if(item.type==='url')urls.push(item.url);else if(item.file)urls.push(await uploadSanitized(item.file,`homes/${state.ownerId}/books/${state.book.id}/entries`));}data.imageUrls=urls;if(id)await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'entries',id),data);else{const created=await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'entries'),{...data,order:entriesForMenu().length,createdAt:serverTimestamp()});state.selectedEntryId=created.id;}const removed=oldUrls.filter(url=>!urls.includes(url));await Promise.all(removed.map(deleteStoredUrl));clearEntryMedia();closeModal('contentModal');notify('내용을 저장했어요.');}catch(error){notify(error.message,'error');}finally{$('contentForm').querySelector('[type="submit"]').disabled=false;}}
+    async function deleteMenu(id){const menu=state.menus.find(item=>item.id===id);if(!menu||!confirm(`“${menu.name}” 메뉴와 연결된 내용을 모두 삭제할까요?`))return;try{const linked=state.entries.filter(item=>item.menuId===id);const linkedPhotos=state.photos.filter(item=>item.menuId===id);await Promise.all([...linked.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'entries',item.id))),...linkedPhotos.map(item=>deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',item.id)))]);await deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'menus',id));await Promise.all([...linked.flatMap(item=>[...(item.imageUrls||[]),item.leftImageUrl,item.rightImageUrl]),...linkedPhotos.map(item=>item.imageUrl)].filter(Boolean).map(deleteStoredUrl));notify('메뉴와 연결된 내용을 삭제했어요.');}catch(error){notify(error.message,'error');}}
+    async function saveContent(event){
+      event.preventDefault();if(!state.isOwner||!state.menu)return;
+      const id=$('editingEntryId').value,existing=state.entries.find(item=>item.id===id);
+      let data={menuId:state.menu.id,entryType:state.menu.type,imageFit:$('entryImageFitInput').value||'contain',updatedAt:serverTimestamp()};
+      if(state.menu.type==='pages')Object.assign(data,{title:cleanRichHtml($('entryTitleInput').value),subtitle:cleanRichHtml($('entrySubtitleInput').value),body:cleanRichHtml($('entryBodyInput').value),layout:$('entryLayoutInput').value,pageTemplate:$('pageTemplateInput').value,personAName:cleanRichHtml($('personANameInput').value),personAInfo:cleanRichHtml($('personAInfoInput').value),personANote:cleanRichHtml($('personANoteInput').value),personBName:cleanRichHtml($('personBNameInput').value),personBInfo:cleanRichHtml($('personBInfoInput').value),personBNote:cleanRichHtml($('personBNoteInput').value),storyTimeline:$('storyTimelineInput').value});
+      if(state.menu.type==='persona'){const information=cleanRichHtml($('personaInformationInput').value);Object.assign(data,{information,name:richPlain(information,'').slice(0,100),prompt:$('personaPromptInput').value,memo:cleanRichHtml($('personaMemoInput').value)});}
+      if(state.menu.type==='board')Object.assign(data,{number:$('postNumberInput').value.trim(),date:$('postDateInput').value,title:cleanRichHtml($('postTitleInput').value),tags:$('postTagsInput').value.trim(),body:cleanRichHtml($('postBodyInput').value)});
+      try{
+        const submit=$('contentForm').querySelector('[type="submit"]');submit.disabled=true;
+        const uploadPath=`homes/${state.ownerId}/books/${state.book.id}/entries`;
+        const resolveSide=async item=>{
+          if(!item||item.type==='clear')return '';
+          if(item.type==='url')return item.url||'';
+          if(item.file)return await uploadSanitized(item.file,uploadPath);
+          return '';
+        };
+        const leftImageUrl=await resolveSide(state.entrySideMedia.left),rightImageUrl=await resolveSide(state.entrySideMedia.right);
+        const urls=[];
+        for(const item of state.entryMediaItems){
+          if(item.type==='url')urls.push(item.url);
+          else if(item.file)urls.push(await uploadSanitized(item.file,uploadPath));
+        }
+        data.leftImageUrl=leftImageUrl;data.rightImageUrl=rightImageUrl;data.imageUrls=urls;
+        if(id)await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'entries',id),data);
+        else{
+          const created=await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'entries'),{...data,order:entriesForMenu().length,createdAt:serverTimestamp()});
+          state.selectedEntryId=created.id;
+        }
+        const oldAll=[...(existing?.imageUrls||[]),existing?.leftImageUrl,existing?.rightImageUrl].filter(Boolean);
+        const newAll=[...urls,leftImageUrl,rightImageUrl].filter(Boolean);
+        await Promise.all([...new Set(oldAll.filter(url=>!newAll.includes(url)))].map(deleteStoredUrl));
+        clearEntryMedia();clearEntrySideMedia();closeModal('contentModal');notify('내용을 저장했어요.');
+      }catch(error){notify(error.message,'error');}
+      finally{$('contentForm').querySelector('[type="submit"]').disabled=false;}
+    }
 
-    async function deleteEntry(id){if(!confirm('이 내용을 삭제할까요?'))return;const entry=state.entries.find(item=>item.id===id);try{await deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'entries',id));await Promise.all((entry?.imageUrls||[]).map(deleteStoredUrl));if(state.selectedEntryId===id)state.selectedEntryId=null;notify('삭제했어요.');}catch(error){notify(error.message,'error');}}
-    async function savePhoto(event){event.preventDefault();if(!(state.isOwner||state.isFriend)||!state.photoFile)return;try{const submit=$('photoForm').querySelector('[type="submit"]');submit.disabled=true;const imageUrl=await uploadSanitized(state.photoFile,`homes/${state.ownerId}/books/${state.book.id}/friend-photos/${state.user.uid}`);await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'photos'),{menuId:state.menu.id,name:$('photoNameInput').value.trim(),message:cleanRichHtml($('photoMessageInput').value),imageUrl,fitMode:$('photoFitInput').value||'contain',uploaderId:state.user.uid,createdAt:serverTimestamp()});closeModal('photoModal');$('photoForm').reset();syncRichEditorsFromSources($('photoModal'));setPhotoFit('contain');state.photoFile=null;$('photoPreview').hidden=true;$('photoEditBtn').hidden=true;notify('사진을 붙였어요.');}catch(error){notify(error.message,'error');}finally{$('photoForm').querySelector('[type="submit"]').disabled=false;}}
-    async function deletePhoto(id){if(!confirm('이 사진을 삭제할까요?'))return;const photo=state.photos.find(item=>item.id===id);try{await deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',id));await deleteStoredUrl(photo?.imageUrl);notify('사진을 삭제했어요.');}catch(error){notify(error.message,'error');}}
+    async function deleteEntry(id){
+      if(!confirm('이 내용을 삭제할까요?'))return;
+      const entry=state.entries.find(item=>item.id===id);
+      try{
+        await deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'entries',id));
+        await Promise.all([...new Set([...(entry?.imageUrls||[]),entry?.leftImageUrl,entry?.rightImageUrl].filter(Boolean))].map(deleteStoredUrl));
+        if(state.selectedEntryId===id)state.selectedEntryId=null;notify('삭제했어요.');
+      }catch(error){notify(error.message,'error');}
+    }
+
+    function openGuestbookModal(item=null){
+      state.guestbookEditingId=item?.id||null;$('editingGuestbookId').value=item?.id||'';$('guestbookModalTitle').textContent=item?'방명록 수정':'방명록 남기기';$('guestbookNameInput').value=item?.name||state.profile?.displayName||'';$('guestbookMessageInput').value=item?.message||'';syncRichEditorsFromSources($('guestbookModal'));openModal('guestbookModal');
+    }
+    async function saveGuestbook(event){
+      event.preventDefault();if(!state.user)return;
+      const id=$('editingGuestbookId').value,existing=state.photos.find(item=>item.id===id);
+      if(!id&&!(state.isOwner||state.isFriend))return;
+      if(id&&!(state.isOwner||existing?.uploaderId===state.user.uid))return;
+      const data={menuId:state.menu.id,kind:'guestbook',name:$('guestbookNameInput').value.trim(),message:cleanRichHtml($('guestbookMessageInput').value),imageUrl:'',uploaderId:existing?.uploaderId||state.user.uid,updatedAt:serverTimestamp()};
+      try{
+        if(id){
+          if(!(state.isOwner||existing?.uploaderId===state.user.uid))throw new Error('수정 권한이 없어요.');
+          await updateDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',id),data);
+        }else await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'photos'),{...data,createdAt:serverTimestamp()});
+        closeModal('guestbookModal');$('guestbookForm').reset();syncRichEditorsFromSources($('guestbookModal'));notify('방명록을 저장했어요.');
+      }catch(error){notify(error.message,'error');}
+    }
+    async function savePhoto(event){
+      event.preventDefault();if(!(state.isOwner||state.isFriend)||!state.photoFile)return;
+      try{
+        const submit=$('photoForm').querySelector('[type="submit"]');submit.disabled=true;
+        const imageUrl=await uploadSanitized(state.photoFile,`homes/${state.ownerId}/books/${state.book.id}/friend-photos/${state.user.uid}`);
+        await addDoc(collection(state.db,'homes',state.ownerId,'books',state.book.id,'photos'),{menuId:state.menu.id,kind:'photo',name:$('photoNameInput').value.trim(),message:cleanRichHtml($('photoMessageInput').value),imageUrl,fitMode:$('photoFitInput').value||'contain',uploaderId:state.user.uid,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+        closeModal('photoModal');$('photoForm').reset();syncRichEditorsFromSources($('photoModal'));setPhotoFit('contain');state.photoFile=null;$('photoPreview').hidden=true;$('photoEditBtn').hidden=true;notify('앨범에 사진을 붙였어요.');
+      }catch(error){notify(error.message,'error');}
+      finally{$('photoForm').querySelector('[type="submit"]').disabled=false;}
+    }
+
+    async function deletePhoto(id){if(!confirm('이 방명록 또는 사진을 삭제할까요?'))return;const photo=state.photos.find(item=>item.id===id);try{await deleteDoc(doc(state.db,'homes',state.ownerId,'books',state.book.id,'photos',id));await deleteStoredUrl(photo?.imageUrl);notify('사진을 삭제했어요.');}catch(error){notify(error.message,'error');}}
 
     async function signUp(event){event.preventDefault();$('signupError').textContent='';const slug=slugify($('signupSlug').value);if(slug.length<3){$('signupError').textContent='주소 ID는 영문·숫자로 3자 이상 입력해 주세요.';return;}try{const credential=await createUserWithEmailAndPassword(state.auth,$('signupEmail').value,$('signupPassword').value);const uid=credential.user.uid;await runTransaction(state.db,async tx=>{const handleRef=doc(state.db,'handles',slug);if((await tx.get(handleRef)).exists())throw new Error('이미 사용 중인 주소 ID예요.');tx.set(handleRef,{ownerId:uid,slug,createdAt:serverTimestamp()});tx.set(doc(state.db,'users',uid),{displayName:$('signupName').value.trim(),slug,createdAt:serverTimestamp()});tx.set(doc(state.db,'homes',uid),{ownerId:uid,slug,title:`${$('signupName').value.trim()}의 다이어리`,isPublic:true,createdAt:serverTimestamp()});});const first=await addDoc(collection(state.db,'homes',uid,'books'),{...DEFAULT_BOOK,title:'나의 첫 다이어리',subtitle:'',order:0,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});state.ownerId=uid;await seedBook(first.id);closeModal('authModal');location.hash=`#/${slug}/book/${first.id}`;}catch(error){$('signupError').textContent=error.message;}}
     async function login(event){event.preventDefault();$('loginError').textContent='';try{await signInWithEmailAndPassword(state.auth,$('loginEmail').value,$('loginPassword').value);closeModal('authModal');}catch(error){$('loginError').textContent='이메일 또는 비밀번호를 확인해 주세요.';}}
@@ -955,12 +1302,98 @@
     async function moveFriend(friendId,direction){if(!state.isOwner)return;const friends=sortedFriends(),index=friends.findIndex(item=>item.id===friendId),target=index+direction;if(index<0||target<0||target>=friends.length)return;try{const next=[...friends];const [moved]=next.splice(index,1);next.splice(target,0,moved);const batch=writeBatch(state.db);next.forEach((item,order)=>batch.update(doc(state.db,'homes',state.ownerId,'friends',item.id),{order,updatedAt:serverTimestamp()}));await batch.commit();notify('친구 순서를 바꿨어요.');}catch(error){notify(error.message,'error');}}
     async function removeFriend(friendId){if(!confirm('친구 등록을 해제할까요?'))return;try{const batch=writeBatch(state.db);batch.delete(doc(state.db,'homes',state.user.uid,'friends',friendId));batch.delete(doc(state.db,'homes',friendId,'friends',state.user.uid));await batch.commit();notify('친구 등록을 해제했어요.');}catch(error){notify(error.message,'error');}}
 
+    function goToMyDiary(){
+      if(!state.user){openAuth(false);return;}
+      const slug=state.profile?.slug;if(!slug){notify('내 다이어리 주소를 찾지 못했어요.','error');return;}
+      location.hash=`#/${slug}`;resolveRoute();
+    }
+    function leaveAccessGate(){
+      const kind=$('accessKindInput').value;closeModal('accessModal');
+      if(kind==='menu')return;
+      if(kind==='book'){openLibrary();return;}
+      if(state.profile?.slug&&state.profile.slug!==state.slug){location.hash=`#/${state.profile.slug}`;resolveRoute();}
+      else history.back();
+    }
     function openAuth(signup=false){if(!firebaseReady){notify('먼저 firebaseConfig를 입력해 주세요.','error');return;}$('loginForm').hidden=signup;$('signupForm').hidden=!signup;$('authModalTitle').textContent=signup?'회원가입':'로그인';openModal('authModal');}
-    async function resolveRoute(){clearUnsubs();const parts=currentPath();let slug=parts[0]||state.profile?.slug||'demo';let requestedBook=parts[1]==='book'?parts[2]:'';state.slug=slug;state.selectedEntryId=null;if(!firebaseReady||slug==='demo'){loadDemo(requestedBook);return;}try{const handle=await getDoc(doc(state.db,'handles',slug));if(!handle.exists()){state.book=null;state.books=[];renderAll();notify('해당 다이어리 홈페이지를 찾지 못했어요.','error');return;}state.ownerId=handle.data().ownerId;state.isOwner=state.user?.uid===state.ownerId;const homeSnap=await getDoc(doc(state.db,'homes',state.ownerId));state.home=homeSnap.exists()?homeSnap.data():{title:`${slug}의 다이어리`,slug};await checkFriend();subscribeBooks(requestedBook);}catch(error){notify(error.message,'error');state.book=null;renderAll();}}
-    function loadDemo(requestedBook=''){clearUnsubs();state.ownerId='demo-owner';state.slug='demo';state.home={title:'My Story Diary',slug:'demo'};state.books=DEMO_BOOKS.map(item=>({...item}));state.book=getBook(requestedBook)||state.books[0];state.menus=(DEMO_MENUS[state.book.id]||[]).map(item=>({...item}));state.entries=(DEMO_ENTRIES[state.book.id]||[]).map(item=>({...item}));state.photos=[];state.menu={id:'cover',name:state.book?.coverMenuName||'표지',type:'cover'};state.isOwner=false;state.isFriend=false;renderAll();}
+    async function resolveRoute(){
+      clearUnsubs();
+      const parts=currentPath();let slug=parts[0]||state.profile?.slug||'demo';let requestedBook=parts[1]==='book'?parts[2]:'';
+      state.slug=slug;state.selectedEntryId=null;
+      if(!firebaseReady||slug==='demo'){loadDemo(requestedBook);return;}
+      try{
+        const handle=await getDoc(doc(state.db,'handles',slug));
+        if(!handle.exists()){state.book=null;state.books=[];renderAll();notify('해당 다이어리 홈페이지를 찾지 못했어요.','error');return;}
+        state.ownerId=handle.data().ownerId;state.isOwner=state.user?.uid===state.ownerId;
+        const homeSnap=await getDoc(doc(state.db,'homes',state.ownerId));
+        state.home=homeSnap.exists()?homeSnap.data():{title:`${slug}의 다이어리`,slug};
+        await checkFriend();
+        $('myDiaryBtn').hidden=!state.user||state.user.uid===state.ownerId||!state.profile?.slug;
+        if(homeNeedsPassword()){
+          state.book=null;state.books=[];$('loadingCover').hidden=true;$('workspace').hidden=true;$('landing').hidden=false;openAccessGate('home');return;
+        }
+        subscribeBooks(requestedBook);
+      }catch(error){notify(error.message,'error');state.book=null;renderAll();}
+    }
+    function loadDemo(requestedBook=''){
+      clearUnsubs();state.ownerId='demo-owner';state.slug='demo';state.home={title:'My Story Diary',slug:'demo'};state.books=DEMO_BOOKS.map(item=>({...item}));state.book=getBook(requestedBook)||state.books[0];state.menus=(DEMO_MENUS[state.book.id]||[]).map(item=>({...item}));state.entries=(DEMO_ENTRIES[state.book.id]||[]).map(item=>({...item}));state.photos=[];state.menu={id:'cover',name:state.book?.coverMenuName||'표지',type:'cover'};state.isOwner=false;state.isFriend=false;renderAll();
+    }
     async function checkFriend(){state.isFriend=false;if(!state.user||state.isOwner)return;const snap=await getDoc(doc(state.db,'homes',state.ownerId,'friends',state.user.uid));state.isFriend=snap.exists();}
-    function subscribeBooks(requestedBook=''){let initialBook=requestedBook;const booksRef=collection(state.db,'homes',state.ownerId,'books');const source=(state.isOwner||state.isFriend)?booksRef:query(booksRef,where('isPublic','==',true));const unsub=onSnapshot(source,snap=>{state.books=sorted(snap.docs.map(d=>({id:d.id,...d.data()})));const next=getBook(initialBook)||getBook(state.book?.id)||state.books[0];initialBook='';if(next?.id!==state.book?.id){state.book=next||null;state.menu={id:'cover',name:state.book?.coverMenuName||'표지',type:'cover'};subscribeBookCollections();}else{state.book=next||null;renderAll();}});state.unsubs.push(unsub);subscribeViewedFriendData();if(state.isOwner)subscribeOwnFriendRequests();}
-    function subscribeBookCollections(){state.childUnsubs.forEach(fn=>{try{fn();}catch{}});state.childUnsubs=[];if(!state.book){renderAll();return;}const menuUnsub=onSnapshot(collection(state.db,'homes',state.ownerId,'books',state.book.id,'menus'),snap=>{state.menus=sorted(snap.docs.map(d=>({id:d.id,...d.data()})));if(state.menu?.id!=='cover'){state.menu=state.menus.find(item=>item.id===state.menu?.id)||{id:'cover',name:'표지',type:'cover'};}renderAll();ensureDefaultMenusOnce();});const entryUnsub=onSnapshot(collection(state.db,'homes',state.ownerId,'books',state.book.id,'entries'),snap=>{state.entries=snap.docs.map(d=>({id:d.id,...d.data()}));renderSpread();renderAdmin();});const photoUnsub=onSnapshot(collection(state.db,'homes',state.ownerId,'books',state.book.id,'photos'),snap=>{state.photos=snap.docs.map(d=>({id:d.id,...d.data()}));if(state.menu?.type==='gallery')renderSpread();});state.childUnsubs.push(menuUnsub,entryUnsub,photoUnsub);updateRoute();}
+    function subscribeBooks(requestedBook=''){
+      let initialBook=requestedBook;
+      const booksRef=collection(state.db,'homes',state.ownerId,'books');
+      const source=(state.isOwner||state.isFriend)?booksRef:query(booksRef,where('isPublic','==',true));
+      const unsub=onSnapshot(source,snap=>{
+        state.books=sorted(snap.docs.map(d=>({id:d.id,...d.data()})));
+        const next=getBook(initialBook)||getBook(state.book?.id)||state.books[0];initialBook='';
+        if(!next){state.book=null;renderAll();return;}
+        if(next.id!==state.book?.id){
+          state.book=next;state.menu={id:'cover',name:state.book?.coverMenuName||'표지',type:'cover',accessMode:'public'};state.selectedEntryId=null;
+          if(bookNeedsPassword(next)){state.menus=[];state.entries=[];state.photos=[];renderAll();openAccessGate('book',next.id);updateRoute();return;}
+          subscribeBookCollections();
+        }else{
+          state.book=next;
+          if(bookNeedsPassword(next)){renderAll();openAccessGate('book',next.id);return;}
+          renderAll();
+        }
+      },error=>notify(error.message,'error'));
+      state.unsubs.push(unsub);subscribeViewedFriendData();if(state.isOwner)subscribeOwnFriendRequests();
+    }
+    function clearVisibleMenuSubs(){
+      try{state.visitorEntryUnsub?.();}catch{}try{state.visitorPhotoUnsub?.();}catch{}
+      state.visitorEntryUnsub=null;state.visitorPhotoUnsub=null;
+    }
+    function subscribeVisibleMenuData(){
+      if(!firebaseReady||state.slug==='demo'||state.isOwner||!state.book)return;
+      clearVisibleMenuSubs();state.entries=[];state.photos=[];
+      if(!state.menu||['cover','friends','hidden'].includes(state.menu.type)){renderSpread();return;}
+      if(menuNeedsPassword(state.menu)){renderMenus();openAccessGate('menu',state.menu.id);return;}
+      if(['pages','persona','board'].includes(state.menu.type)){
+        const source=query(collection(state.db,'homes',state.ownerId,'books',state.book.id,'entries'),where('menuId','==',state.menu.id));
+        state.visitorEntryUnsub=onSnapshot(source,snap=>{state.entries=snap.docs.map(d=>({id:d.id,...d.data()}));renderSpread();},error=>notify(error.message,'error'));
+      }else if(state.menu.type==='gallery'){
+        const source=query(collection(state.db,'homes',state.ownerId,'books',state.book.id,'photos'),where('menuId','==',state.menu.id));
+        state.visitorPhotoUnsub=onSnapshot(source,snap=>{state.photos=snap.docs.map(d=>({id:d.id,...d.data()}));renderSpread();},error=>notify(error.message,'error'));
+      }
+    }
+    function subscribeBookCollections(){
+      state.childUnsubs.forEach(fn=>{try{fn();}catch{}});state.childUnsubs=[];clearVisibleMenuSubs();
+      if(!state.book){renderAll();return;}
+      const menusRef=collection(state.db,'homes',state.ownerId,'books',state.book.id,'menus');
+      const menuSource=state.isOwner?menusRef:query(menusRef,where('accessMode','in',['public','password']));
+      const menuUnsub=onSnapshot(menuSource,snap=>{
+        state.menus=sorted(snap.docs.map(d=>({id:d.id,...d.data()})));
+        if(state.menu?.id!=='cover')state.menu=state.menus.find(item=>item.id===state.menu?.id)||{id:'cover',name:'표지',type:'cover',accessMode:'public'};
+        renderAll();ensureDefaultMenusOnce();if(!state.isOwner)subscribeVisibleMenuData();
+      },error=>notify(error.message,'error'));
+      state.childUnsubs.push(menuUnsub);
+      if(state.isOwner){
+        const entryUnsub=onSnapshot(collection(state.db,'homes',state.ownerId,'books',state.book.id,'entries'),snap=>{state.entries=snap.docs.map(d=>({id:d.id,...d.data()}));renderSpread();renderAdmin();});
+        const photoUnsub=onSnapshot(collection(state.db,'homes',state.ownerId,'books',state.book.id,'photos'),snap=>{state.photos=snap.docs.map(d=>({id:d.id,...d.data()}));if(state.menu?.type==='gallery')renderSpread();});
+        state.childUnsubs.push(entryUnsub,photoUnsub);
+      }
+      updateRoute();
+    }
+
     function subscribeViewedFriendData(){
       const friendUnsub=onSnapshot(collection(state.db,'homes',state.ownerId,'friends'),snap=>{state.friends=sortedFriends(snap.docs.map(d=>({id:d.id,...d.data()})));state.friendProfiles={};if(state.menu?.type==='friends')renderSpread();if(state.isOwner)renderFriendAdmin();},error=>{console.warn('friend list',error);state.friends=[];});
       state.friendUnsubs.push(friendUnsub);
@@ -969,7 +1402,21 @@
       if(!state.user)return;const reqUnsub=onSnapshot(collection(state.db,'homes',state.user.uid,'friendRequests'),snap=>{state.friendRequests=snap.docs.map(d=>({id:d.id,...d.data()})).filter(item=>item.status==='pending');renderFriendAdmin();});state.friendUnsubs.push(reqUnsub);
     }
 
-    async function switchBook(id){if(state.book?.id===id){closeLibrary();return;}$('bookShell').classList.add('switching');setTimeout(()=>{state.book=getBook(id);state.menu={id:'cover',name:state.book?.coverMenuName||'표지',type:'cover'};state.selectedEntryId=null;if(firebaseReady&&state.slug!=='demo')subscribeBookCollections();else{state.menus=(DEMO_MENUS[id]||[]).map(item=>({...item}));state.entries=(DEMO_ENTRIES[id]||[]).map(item=>({...item}));state.photos=[];renderAll();updateRoute();}$('bookShell').classList.remove('switching');closeLibrary();},230);}
+    async function switchBook(id){
+      if(state.book?.id===id&&!bookNeedsPassword(state.book)){closeLibrary();return;}
+      $('bookShell').classList.add('switching');
+      setTimeout(()=>{
+        state.book=getBook(id);state.menu={id:'cover',name:state.book?.coverMenuName||'표지',type:'cover',accessMode:'public'};state.selectedEntryId=null;
+        if(firebaseReady&&state.slug!=='demo'){
+          if(bookNeedsPassword(state.book)){state.menus=[];state.entries=[];state.photos=[];renderAll();updateRoute();openAccessGate('book',id);}
+          else subscribeBookCollections();
+        }else{
+          state.menus=(DEMO_MENUS[id]||[]).map(item=>({...item}));state.entries=(DEMO_ENTRIES[id]||[]).map(item=>({...item}));state.photos=[];renderAll();updateRoute();
+        }
+        $('bookShell').classList.remove('switching');closeLibrary();
+      },230);
+    }
+
     function updateRoute(){if(!state.book)return;const desired=`#/${state.slug}/book/${state.book.id}`;if(location.hash!==desired)history.replaceState(null,'',desired);}
 
     function setEntryImageFit(value='contain'){
@@ -979,8 +1426,9 @@
       const fit=['contain','cover','auto'].includes(value)?value:'contain';$('photoFitInput').value=fit;document.querySelectorAll('input[name="photoFit"]').forEach(input=>input.checked=input.value===fit);$('photoPreview')?.classList.toggle('fit-cover',fit==='cover');$('photoPreview')?.classList.toggle('fit-contain',fit==='contain');$('photoPreview')?.classList.toggle('fit-auto',fit==='auto');
     }
     function bindStaticEvents(){
-      $('brandBtn').addEventListener('click',openLibrary);$('libraryBtn').addEventListener('click',openLibrary);$('changeBookBtn').addEventListener('click',openLibrary);$('closeLibraryBtn').addEventListener('click',closeLibrary);$('libraryBackdrop').addEventListener('click',closeLibrary);$('adminBtn').addEventListener('click',()=>{state.preview=false;updateBodyFlags();openDrawer('book');});$('closeDrawerBtn').addEventListener('click',closeDrawer);$('drawerBackdrop').addEventListener('click',closeDrawer);document.querySelectorAll('.drawer-tab').forEach(btn=>btn.addEventListener('click',()=>selectDrawerTab(btn.dataset.drawerTab)));$('newBookBtn').addEventListener('click',()=>openBookModal());$('newMenuBtn').addEventListener('click',()=>openMenuModal());$('quickAddBtn').addEventListener('click',()=>openContentModal());$('drawerAddContentBtn').addEventListener('click',()=>openContentModal());$('saveBookBtn').addEventListener('click',saveBookSettings);$('deleteBookBtn').addEventListener('click',deleteCurrentBook);$('bookForm').addEventListener('submit',createOrEditBook);$('menuForm').addEventListener('submit',saveMenu);$('contentForm').addEventListener('submit',saveContent);$('photoForm').addEventListener('submit',savePhoto);$('loginForm').addEventListener('submit',login);$('signupForm').addEventListener('submit',signUp);$('showSignupBtn').addEventListener('click',()=>openAuth(true));$('showLoginBtn').addEventListener('click',()=>openAuth(false));$('landingAuthBtn').addEventListener('click',()=>openAuth(true));$('demoBtn').addEventListener('click',()=>{location.hash='#/demo/book/sample';resolveRoute();});$('authBtn').addEventListener('click',()=>state.user?logout():openAuth(false));$('shareBtn').addEventListener('click',()=>navigator.clipboard.writeText(buildHomeLink(state.slug,state.book?.id)).then(()=>notify('현재 다이어리 링크를 복사했어요.')));$('copyMyLinkBtn').addEventListener('click',()=>navigator.clipboard.writeText($('myLinkInput').value).then(()=>notify('다이어리 링크를 복사했어요.')));$('sendFriendBtn').addEventListener('click',sendFriendRequest);$('addFriendsMenuBtn').addEventListener('click',addFriendsMenu);$('linkImageInput').addEventListener('change',()=>previewLinkImage($('linkImageInput').files?.[0]));$('clearLinkImageBtn').addEventListener('click',clearLinkImage);$('editLinkImageBtn').addEventListener('click',()=>openImageEditor('link',{blob:state.tempHomeAsset?.blob,url:state.tempHomeAsset?.preview||state.home?.linkImage}));$('downloadOgImageBtn').addEventListener('click',downloadOgImage);$('imageEditorCloseBtn').addEventListener('click',()=>closeImageEditor());$('imageEditorCancelBtn').addEventListener('click',()=>closeImageEditor());$('imageEditorApplyBtn').addEventListener('click',applyImageEditor);$('imageCropRatioInput').addEventListener('change',event=>{if(!state.imageEditor)return;state.imageEditor.ratio=event.target.value;state.imageEditor.offsetX=0;state.imageEditor.offsetY=0;renderImageEditor({resize:true});});$('imageZoomInput').addEventListener('input',event=>{if(!state.imageEditor)return;state.imageEditor.zoom=Number(event.target.value);renderImageEditor();});$('imagePositionXInput').addEventListener('input',event=>{if(!state.imageEditor)return;const canvas=$('imageEditorCanvas');state.imageEditor.offsetX=(Number(event.target.value)/100)*(canvas.width*.5);renderImageEditor();});$('imagePositionYInput').addEventListener('input',event=>{if(!state.imageEditor)return;const canvas=$('imageEditorCanvas');state.imageEditor.offsetY=(Number(event.target.value)/100)*(canvas.height*.5);renderImageEditor();});$('imageRotateInput').addEventListener('input',event=>{if(!state.imageEditor)return;state.imageEditor.rotation=Number(event.target.value);renderImageEditor();});$('rotateLeftBtn').addEventListener('click',()=>{if(state.imageEditor){state.imageEditor.rotation=Math.max(-180,Math.min(180,state.imageEditor.rotation-90));renderImageEditor({resize:state.imageEditor.ratio==='original'});}});$('rotateRightBtn').addEventListener('click',()=>{if(state.imageEditor){state.imageEditor.rotation=Math.max(-180,Math.min(180,state.imageEditor.rotation+90));renderImageEditor({resize:state.imageEditor.ratio==='original'});}});$('imageEditorResetBtn').addEventListener('click',()=>resetImageEditor(false));$('imageEditorCenterBtn').addEventListener('click',()=>resetImageEditor(true));bindImageEditorCanvas();document.querySelectorAll('input[name="entryImageFit"]').forEach(input=>input.addEventListener('change',()=>setEntryImageFit(input.value)));document.querySelectorAll('input[name="photoFit"]').forEach(input=>input.addEventListener('change',()=>setPhotoFit(input.value)));$('previewBtn').addEventListener('click',()=>{state.preview=true;updateBodyFlags();closeDrawer();notify('방문자 화면으로 미리보는 중이에요. 새로고침하면 편집 화면으로 돌아와요.');});document.querySelectorAll('[data-close-modal]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.closeModal)));document.querySelectorAll('.modal-backdrop').forEach(backdrop=>backdrop.addEventListener('click',event=>{if(event.target!==backdrop)return;if(backdrop.id==='imageEditorModal')closeImageEditor();else backdrop.hidden=true;}));document.querySelectorAll('[data-menu-type]').forEach(btn=>btn.addEventListener('click',()=>{$('menuTypeInput').value=btn.dataset.menuType;document.querySelectorAll('[data-menu-type]').forEach(item=>item.classList.toggle('active',item===btn));updateMenuTypeFields();}));document.querySelectorAll('[data-page-template]').forEach(btn=>btn.addEventListener('click',()=>setPageTemplate(btn.dataset.pageTemplate)));$('entryFilesInput').addEventListener('change',()=>addEntryFiles($('entryFilesInput').files||[]));$('photoFileInput').addEventListener('change',()=>{state.photoFile=$('photoFileInput').files?.[0]||null;previewFiles(state.photoFile?[state.photoFile]:[],'photoPreview');$('photoFileName').textContent=state.photoFile?.name||'선택된 사진 없음';$('photoEditBtn').hidden=!state.photoFile;});$('photoEditBtn').addEventListener('click',()=>openImageEditor('photo',{file:state.photoFile}));
+      $('brandBtn').addEventListener('click',openLibrary);$('libraryBtn').addEventListener('click',openLibrary);$('changeBookBtn').addEventListener('click',openLibrary);$('myDiaryBtn').addEventListener('click',goToMyDiary);$('accessBackBtn').addEventListener('click',leaveAccessGate);$('closeLibraryBtn').addEventListener('click',closeLibrary);$('libraryBackdrop').addEventListener('click',closeLibrary);$('adminBtn').addEventListener('click',()=>{state.preview=false;updateBodyFlags();openDrawer('book');});$('closeDrawerBtn').addEventListener('click',closeDrawer);$('drawerBackdrop').addEventListener('click',closeDrawer);document.querySelectorAll('.drawer-tab').forEach(btn=>btn.addEventListener('click',()=>selectDrawerTab(btn.dataset.drawerTab)));$('newBookBtn').addEventListener('click',()=>openBookModal());$('newMenuBtn').addEventListener('click',()=>openMenuModal());$('quickAddBtn').addEventListener('click',()=>openContentModal());$('drawerAddContentBtn').addEventListener('click',()=>openContentModal());$('saveBookBtn').addEventListener('click',saveBookSettings);$('deleteBookBtn').addEventListener('click',deleteCurrentBook);$('bookForm').addEventListener('submit',createOrEditBook);$('menuForm').addEventListener('submit',saveMenu);$('contentForm').addEventListener('submit',saveContent);$('photoForm').addEventListener('submit',savePhoto);$('guestbookForm').addEventListener('submit',saveGuestbook);$('accessForm').addEventListener('submit',verifyAccess);$('loginForm').addEventListener('submit',login);$('signupForm').addEventListener('submit',signUp);$('showSignupBtn').addEventListener('click',()=>openAuth(true));$('showLoginBtn').addEventListener('click',()=>openAuth(false));$('landingAuthBtn').addEventListener('click',()=>openAuth(true));$('demoBtn').addEventListener('click',()=>{location.hash='#/demo/book/sample';resolveRoute();});$('authBtn').addEventListener('click',()=>state.user?logout():openAuth(false));$('shareBtn').addEventListener('click',()=>navigator.clipboard.writeText(buildHomeLink(state.slug,state.book?.id)).then(()=>notify('현재 다이어리 링크를 복사했어요.')));$('copyMyLinkBtn').addEventListener('click',()=>navigator.clipboard.writeText($('myLinkInput').value).then(()=>notify('다이어리 링크를 복사했어요.')));$('sendFriendBtn').addEventListener('click',sendFriendRequest);$('addFriendsMenuBtn').addEventListener('click',addFriendsMenu);$('linkImageInput').addEventListener('change',()=>previewLinkImage($('linkImageInput').files?.[0]));$('clearLinkImageBtn').addEventListener('click',clearLinkImage);$('editLinkImageBtn').addEventListener('click',()=>openImageEditor('link',{blob:state.tempHomeAsset?.blob,url:state.tempHomeAsset?.preview||state.home?.linkImage}));$('downloadOgImageBtn').addEventListener('click',downloadOgImage);$('imageEditorCloseBtn').addEventListener('click',()=>closeImageEditor());$('imageEditorCancelBtn').addEventListener('click',()=>closeImageEditor());$('imageEditorApplyBtn').addEventListener('click',applyImageEditor);$('imageCropRatioInput').addEventListener('change',event=>{if(!state.imageEditor)return;state.imageEditor.ratio=event.target.value;state.imageEditor.offsetX=0;state.imageEditor.offsetY=0;renderImageEditor({resize:true});});$('imageZoomInput').addEventListener('input',event=>{if(!state.imageEditor)return;state.imageEditor.zoom=Number(event.target.value);renderImageEditor();});$('imagePositionXInput').addEventListener('input',event=>{if(!state.imageEditor)return;const canvas=$('imageEditorCanvas');state.imageEditor.offsetX=(Number(event.target.value)/100)*(canvas.width*.5);renderImageEditor();});$('imagePositionYInput').addEventListener('input',event=>{if(!state.imageEditor)return;const canvas=$('imageEditorCanvas');state.imageEditor.offsetY=(Number(event.target.value)/100)*(canvas.height*.5);renderImageEditor();});$('imageRotateInput').addEventListener('input',event=>{if(!state.imageEditor)return;state.imageEditor.rotation=Number(event.target.value);renderImageEditor();});$('rotateLeftBtn').addEventListener('click',()=>{if(state.imageEditor){state.imageEditor.rotation=Math.max(-180,Math.min(180,state.imageEditor.rotation-90));renderImageEditor({resize:state.imageEditor.ratio==='original'});}});$('rotateRightBtn').addEventListener('click',()=>{if(state.imageEditor){state.imageEditor.rotation=Math.max(-180,Math.min(180,state.imageEditor.rotation+90));renderImageEditor({resize:state.imageEditor.ratio==='original'});}});$('imageEditorResetBtn').addEventListener('click',()=>resetImageEditor(false));$('imageEditorCenterBtn').addEventListener('click',()=>resetImageEditor(true));bindImageEditorCanvas();document.querySelectorAll('input[name="entryImageFit"]').forEach(input=>input.addEventListener('change',()=>setEntryImageFit(input.value)));document.querySelectorAll('input[name="photoFit"]').forEach(input=>input.addEventListener('change',()=>setPhotoFit(input.value)));$('previewBtn').addEventListener('click',()=>{state.preview=true;updateBodyFlags();closeDrawer();notify('방문자 화면으로 미리보는 중이에요. 새로고침하면 편집 화면으로 돌아와요.');});document.querySelectorAll('[data-close-modal]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.closeModal)));document.querySelectorAll('.modal-backdrop').forEach(backdrop=>backdrop.addEventListener('click',event=>{if(event.target!==backdrop)return;if(backdrop.id==='imageEditorModal')closeImageEditor();else if(backdrop.id!=='accessModal')backdrop.hidden=true;}));document.querySelectorAll('[data-menu-type]').forEach(btn=>btn.addEventListener('click',()=>{$('menuTypeInput').value=btn.dataset.menuType;document.querySelectorAll('[data-menu-type]').forEach(item=>item.classList.toggle('active',item===btn));updateMenuTypeFields();}));document.querySelectorAll('[data-page-template]').forEach(btn=>btn.addEventListener('click',()=>setPageTemplate(btn.dataset.pageTemplate)));$('entryFilesInput').addEventListener('change',()=>addEntryFiles($('entryFilesInput').files||[]));$('leftSidePhotoInput').addEventListener('change',()=>setEntrySideFromFile('left',$('leftSidePhotoInput').files?.[0]));$('rightSidePhotoInput').addEventListener('change',()=>setEntrySideFromFile('right',$('rightSidePhotoInput').files?.[0]));$('editLeftSidePhotoBtn').addEventListener('click',()=>{const item=state.entrySideMedia.left;if(item)openImageEditor('entry-side',{side:'left',file:item.file,url:item.url||item.preview});});$('editRightSidePhotoBtn').addEventListener('click',()=>{const item=state.entrySideMedia.right;if(item)openImageEditor('entry-side',{side:'right',file:item.file,url:item.url||item.preview});});$('clearLeftSidePhotoBtn').addEventListener('click',()=>clearEntrySide('left'));$('clearRightSidePhotoBtn').addEventListener('click',()=>clearEntrySide('right'));$('photoFileInput').addEventListener('change',()=>{state.photoFile=$('photoFileInput').files?.[0]||null;previewFiles(state.photoFile?[state.photoFile]:[],'photoPreview');$('photoFileName').textContent=state.photoFile?.name||'선택된 사진 없음';$('photoEditBtn').hidden=!state.photoFile;});$('photoEditBtn').addEventListener('click',()=>openImageEditor('photo',{file:state.photoFile}));
       $('homeTitleInput').addEventListener('input',()=>{state.home={...(state.home||{}),title:$('homeTitleInput').value};$('brandTitle').textContent=state.home.title||'My Story Diary';$('libraryTitle').textContent=state.home.title||'나의 다이어리';});$('coverHiddenInput').addEventListener('change',()=>{state.book={...state.book,coverHidden:$('coverHiddenInput').checked};renderMenus();renderSpread();renderMenuAdmin();});['bookTitleInput','bookSubtitleInput','coverMenuNameInput','coverEyebrowInput','coverTitleInput','coverSubtitleInput','coverFooterInput','coverCaptionInput','coverNoteInput','coverAlignInput','bookPublicInput'].forEach(id=>$(id).addEventListener('input',()=>{const map={bookTitleInput:'title',bookSubtitleInput:'subtitle',coverMenuNameInput:'coverMenuName',coverEyebrowInput:'coverEyebrow',coverTitleInput:'coverTitle',coverSubtitleInput:'coverSubtitle',coverFooterInput:'coverFooter',coverCaptionInput:'coverCaption',coverNoteInput:'coverNote',coverAlignInput:'coverAlign',bookPublicInput:'isPublic'};const key=map[id];state.book={...state.book,[key]:key==='isPublic'?$(id).value==='true':$(id).value};$('currentBookTitle').textContent=richPlain(state.book.title,'');renderMenus();renderSpread();renderLibrary();}));
+      $('homeLockEnabledInput').addEventListener('change',()=>{$('homePasswordField').hidden=!$('homeLockEnabledInput').checked;});$('bookLockEnabledInput').addEventListener('change',()=>{$('bookPasswordField').hidden=!$('bookLockEnabledInput').checked;if($('bookLockEnabledInput').checked)$('bookPublicInput').value='true';});$('menuAccessInput').addEventListener('change',updateMenuTypeFields);
       window.addEventListener('hashchange',resolveRoute);
     }
 
